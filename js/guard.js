@@ -11,7 +11,7 @@ class Guard {
         this.health = spec.hp || 1000;
         this.maxHealth = spec.hp || 1000;
 
-        this.attack = spec.atk || 10;
+        this.attack = spec.atk || 50;
         this.attackInterval = 1000;
 
         this.enemiesInRange = [];
@@ -26,7 +26,7 @@ class Guard {
         let temp = []
         let rangeX = Math.max(this.x - this.range, 0);
         for(const enemy of enemies){
-            if (enemy.x > rangeX && enemy.y === this.y && !this.enemiesInRange.includes(enemy)){
+            if (enemy.x > rangeX && enemy.y > this.y && enemy.y < this.y + this.height && !this.enemiesInRange.includes(enemy)){
                 temp.push(enemy)
             }
         }

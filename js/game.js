@@ -1,10 +1,11 @@
 TOP_OFFSET = 60;
 
-
 class Game {
     constructor(){
         this.board = new Board();
         this.topOffset = TOP_OFFSET;
+        this.width = 800;
+        this.height = 600;
         this.cost = 9;
         this.missed = 0;
         this.enemiesRemaining = 6;
@@ -21,6 +22,8 @@ class Game {
         this.lastWaveTime= 0;
 
         this.paused = false;
+        this.pausedTime = 0;
+        this.pauseInterval = null;
 
         let startTime = new Date().getTime();
         this.firstWaveStart = startTime + 5000;
@@ -28,11 +31,20 @@ class Game {
         this.secondWaveStart = startTime + 20000;
         this.secondWaveEnd = startTime + 35000;
 
-        this.guardSelected = true;
+        this.guardSelected = false;
         this.activeCell = null;
+
+        this.c = document.getElementById("canvas");
+        this.c.width = this.width;
+        this.c.height = this.height;
+        this.ctx = this.c.getContext("2d");
+
+        this.addListeners = this.addListeners.bind(this);
     }
 
-    genCost(time){
+    genCost(){
+        let time = new Date().getTime()
+        // console.log("passed" + (time - this.lastCostTime) / 1000)
         if (time - this.lastCostTime > 2000){
             this.cost += 1;
             this.lastCostTime = time;
@@ -67,29 +79,83 @@ class Game {
         }
     }
 
+    updateWaveTime(){
+        this.firstWaveStart += this.pausedTime;
+        this.firstWaveEnd += this.pausedTime;
+        this.secondWaveStart += this.pausedTime;
+        this.secondWaveEnd += this.pausedTime;
+        this.lastCostTime += this.pausedTime;
+        this.lastWaveTime += this.pausedTime;
+        this.pausedTime = 0;
+    }
+
     drawBoard() {
         const bg = document.getElementById("background");
-        bg.width = 800;
-        bg.height = 600;
+        bg.width = this.width;
+        bg.height = this.height;
         const bgx = bg.getContext("2d");
-
         this.board.draw(bgx);
     }
 
     drawCost(ctx){
-        ctx.fillStyle="white";
+        ctx.fillStyle = "white";
         // ctx.fillRect(700, 550, 30, 15)
 		ctx.font = 'bold 16px Arial';
         ctx.fillText('Cost: ' + this.cost, 700, 560);
     }
 
-    update(){
-        const c = document.getElementById("canvas");
-        c.width = 800;
-        c.height = 600;
-        const ctx = c.getContext("2d");
-        ctx.clearRect(0, 0, 800, 600);
+    drawControl(){
+        const ctx = this.ctx;
+        ctx.fillStyle = "gray";
+        ctx.fillRect(740, 10, 40, 40);
+        const playIcon = document.getElementById("icon-play");
+        const pauseIcon = document.getElementById("icon-pause");
+        let control = this.paused ? playIcon : pauseIcon;
+        ctx.drawImage(control, 745, 15, 30, 30);
+    }
 
+    drawPaused(){
+        const ctx = this.ctx;
+        ctx.save();
+        ctx.globalAlpha = 0.7;
+        ctx.fillStyle = '#333';
+        ctx.fillRect(0, this.topOffset, this.width, 400);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = '#fff'
+        ctx.font = '40px Impact';
+        let text = 'P A U S E D'
+        ctx.fillText(text, this.width / 2 - ctx.measureText(text).width / 2, this.height / 2 - 20);
+        ctx.restore();
+    }
+
+    drawEnemies(time){
+        for (const enemy of this.enemies) {
+            enemy.update(this.ctx, time, this.guards);
+            if (enemy.touchDown()) {
+                this.missed += 1;
+                this.enemies = this.enemies.filter(min => (min !== enemy));
+            };
+            if (enemy.dead()) {
+                this.enemies = this.enemies.filter(min => (min !== enemy));
+            }
+        }
+    }
+
+    drawGuards(time){
+        let guards = this.guards.flat().filter(el => (el instanceof Guard));
+        for (const guard of guards) {
+            guard.update(this.ctx, time, this.enemies);
+            if (guard.dead()) {
+                this.guards[Math.floor(guard.y / 80)][Math.floor(guard.x / 80)] = null;
+            }
+        }
+    }
+
+    update(){
+        const ctx = this.ctx;
+        ctx.clearRect(0, 0, this.width, this.height);
+
+        // hover effect when selected a guard
         this.drawActiveCell(ctx);
 
         let time = new Date().getTime();
@@ -98,38 +164,29 @@ class Game {
 
         this.firstWave(time);
         this.secondWave(time);
-        
-        for (const enemy of this.enemies) {
-            enemy.update(ctx, time, this.guards, this.enemies);
-            if (enemy.touchDown()) {
-                this.missed += 1;
-                this.enemies = this.enemies.filter(min => (min !== enemy));
-            };
-            if (enemy.dead()){
-                this.enemies = this.enemies.filter( min => (min !== enemy));
-            }
-        }
 
-        let guards = this.guards.flat().filter(el => (el instanceof Guard));
-        for (const guard of guards) {
-            guard.update(ctx, time, this.enemies);
-            if (guard.dead()){
-                this.guards[Math.floor(guard.y / 80)][Math.floor(guard.x / 80)] = null;
-            }
-        }
-
+        this.drawEnemies(time);
+        this.drawGuards(time);
     }
 
     animate(){
-        this.update();
-        this.drawBoard();
-        if (this.win()){
-            console.log("mission cleared")
-        } else if (this.lost()){
-            console.log("lost")
+        if (this.paused){
+            this.drawPaused();
+            this.drawControl();
         } else {
-            requestAnimationFrame(this.animate.bind(this))
+            this.update();
+            this.drawBoard();
+            this.drawControl();
+
+            if (this.win()) {
+                console.log("mission cleared")
+            } else if (this.lost()) {
+                console.log("lost")
+            } else {
+                requestAnimationFrame(this.animate.bind(this))
+            }
         }
+
     }
 
     gameOver(){
@@ -143,11 +200,6 @@ class Game {
     lost(){
         return this.missed > 0;
     }
-
-    pauseGame(){
-        this.paused = !this.paused;
-    }
-
 
     addListeners() {
         window.addEventListener("mousemove", e => {
@@ -186,6 +238,7 @@ class Game {
         window.addEventListener("click", e => {
             let x = e.clientX;
             let y = e.clientY;
+            this.pauseGame(x, y)
         })
     }
 
@@ -199,7 +252,7 @@ class Game {
     }
 
     validCell(x, y){
-        if (x > 0 && x < 800 && y > 60 && y < 460){
+        if (x > 0 && x < this.width && y > 60 && y < 460){
             console.log(y)
             if (this.guards[Math.floor((y - this.topOffset) / 80)][Math.floor(x / 80)] === null){
                 return true;
@@ -224,17 +277,25 @@ class Game {
         };
     }
 
+    pauseGame(x, y) {
+        if (x > 745 && x < 775 && y > 15 && y < 45) {
+            this.paused = !this.paused;
+            if (this.paused) {
+                // update paused time
+                this.pauseInterval = setInterval(() => this.pausedTime += 100, 100)
+                // console.log(this.secondWaveStart);
+                // console.dir(this.pauseInterval)
+            } else {
+                this.updateWaveTime();
+                clearInterval(this.pauseInterval);
+                this.animate();
+            }
+        }
+    }
+
     play(){
         this.animate();
         this.addListeners();
-    }
-
-    parseX(x){
-        return Math.floor(x / 80) * 80;
-    }
-
-    parseY(y){
-        return 
     }
 
 }
