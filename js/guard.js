@@ -11,14 +11,19 @@ class Guard {
         this.health = spec.hp || 1000;
         this.maxHealth = spec.hp || 1000;
 
-        this.attack = spec.atk || 50;
+        this.attack = spec.atk || 20;
         this.attackInterval = 1000;
 
         this.enemiesInRange = [];
         this.lastAttacked = 0;
         this.range = (spec.range || 3) * 80;
+        this.cost = spec.cost || 7;
 
         this.attacking = spec.attacking;
+
+
+        const test = document.getElementById("sprite-test");
+        this.image = test;
 
     }
 
@@ -36,7 +41,6 @@ class Guard {
     strike(time){
         if (this.enemiesInRange.length > 0){
             if (time - this.lastAttacked > this.attackInterval) {
-                // console.log("health" + this.enemiesInRange[0].health)
                 this.enemiesInRange[0].health -= this.attack;
                 this.lastAttacked = time;
             }
@@ -45,8 +49,9 @@ class Guard {
 
     draw(ctx) {
         // ctx.drawImage(this.image, this.x)
-        ctx.fillStyle = "blue";
-        ctx.fillRect(this.x + 10, this.y + this.topOffset + 10, this.width, this.height);
+        // ctx.fillStyle = "blue";
+        // ctx.fillRect(this.x + 10, this.y + this.topOffset + 10, this.width, this.height);
+        ctx.drawImage(this.image, this.x + 10, this.y + this.topOffset + 10, this.width, this.height);
         this.drawHealthBar(ctx);
     }
 

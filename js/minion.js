@@ -6,7 +6,7 @@ class Minion {
         this.health = spec.hp || 100;
         this.attack = spec.atk || 40;
         this.moveSpeed = spec.moveSpeed || 50;
-        this.moveLength = 2;
+        this.moveLength = 4;
         this.attackSpeed = spec.attackSpeed || 1000;
         this.size = 60;
 

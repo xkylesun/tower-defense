@@ -8,15 +8,16 @@ class Game {
         this.height = 600;
         this.cost = 9;
         this.missed = 0;
-        this.enemiesRemaining = 6;
+        this.enemiesRemaining = 16;
         this.guardsRemaining = 8;
         this.enemies = [];
         this.guards = new Array(6).fill(0).map(() => new Array(10).fill(null));
 
-        this.shop = [];
-
         //test
-        this.guards[0][3] = new Guard({});
+        const test1 = new ShopItem({idx: 0});
+        const test2 = new ShopItem({idx: 1});
+        const test3 = new ShopItem({idx: 2});
+        this.shop = [test1, test2, test3];
 
         this.lastCostTime = 0;
         this.lastWaveTime= 0;
@@ -25,14 +26,17 @@ class Game {
         this.pausedTime = 0;
         this.pauseInterval = null;
 
+        this.gameOver =false;
+
         let startTime = new Date().getTime();
         this.firstWaveStart = startTime + 5000;
         this.firstWaveEnd = startTime + 15000;
         this.secondWaveStart = startTime + 20000;
-        this.secondWaveEnd = startTime + 35000;
+        this.secondWaveEnd = startTime + 55000;
 
-        this.guardSelected = false;
-        this.activeCell = null;
+        this.guardSelected = null;
+        this.mouseX = null;
+        this.mouseY = null;
 
         this.c = document.getElementById("canvas");
         this.c.width = this.width;
@@ -77,16 +81,6 @@ class Game {
                 this.lastWaveTime = time;
             }
         }
-    }
-
-    updateWaveTime(){
-        this.firstWaveStart += this.pausedTime;
-        this.firstWaveEnd += this.pausedTime;
-        this.secondWaveStart += this.pausedTime;
-        this.secondWaveEnd += this.pausedTime;
-        this.lastCostTime += this.pausedTime;
-        this.lastWaveTime += this.pausedTime;
-        this.pausedTime = 0;
     }
 
     drawBoard() {
@@ -151,12 +145,32 @@ class Game {
         }
     }
 
+    drawShop(){
+        const ctx = this.ctx;
+        ctx.fillStyle = "gray";
+        ctx.fillRect(180, 400 + this.topOffset + 18, 3 * 80, 84);
+
+        for (const item of this.shop){
+            item.draw(ctx);
+        }
+    }
+
+    drawGuardSelected(ctx){
+        if (this.guardSelected){
+            ctx.save();
+            ctx.globalAlpha = 0.5;
+            ctx.drawImage(this.guardSelected.image, this.mouseX - 30, this.mouseY - 30, 60, 60);
+            ctx.restore();
+        }
+    }
+
     update(){
         const ctx = this.ctx;
         ctx.clearRect(0, 0, this.width, this.height);
 
         // hover effect when selected a guard
         this.drawActiveCell(ctx);
+        this.drawGuardSelected(ctx);
 
         let time = new Date().getTime();
         this.genCost(time);
@@ -167,6 +181,11 @@ class Game {
 
         this.drawEnemies(time);
         this.drawGuards(time);
+
+        this.drawShop(ctx);
+
+        this.win();
+        this.lost();
     }
 
     animate(){
@@ -178,43 +197,33 @@ class Game {
             this.drawBoard();
             this.drawControl();
 
-            if (this.win()) {
-                console.log("mission cleared")
-            } else if (this.lost()) {
-                console.log("lost")
-            } else {
+            if (!this.gameOver){
                 requestAnimationFrame(this.animate.bind(this))
-            }
+            } 
         }
 
     }
 
-    gameOver(){
-        return this.win() || this.lost();
-    }
-
     win(){
-        return this.enemies.length === 0 && this.remaining === 0;
+        if(this.enemies.length === 0 && this.enemiesRemaining === 0){
+            setTimeout(() => this.gameOver = true, 2000);
+            console.log("mission cleared")
+        }
     }
 
     lost(){
-        return this.missed > 0;
+        if (this.missed > 0){
+            this.gameOver = true;
+            console.log("you lost")
+        }
     }
 
     addListeners() {
         window.addEventListener("mousemove", e => {
-            if (this.guardSelected){
-                let x = e.clientX;
-                let y = e.clientY;
-                if (this.validCell(x, y)){
-                    this.activeCell = {
-                        x: Math.floor(x / 80) * 80,
-                        y: Math.floor((y - this.topOffset) / 80) * 80 + this.topOffset
-                    }
-                } else {
-                    this.activeCell = null;
-                }
-            } 
+            let x = e.clientX;
+            let y = e.clientY;
+            this.mouseX = x;
+            this.mouseY = y;
         });
 
         window.addEventListener("mousedown", e => {
@@ -230,9 +239,11 @@ class Game {
                 if (this.validCell(x, y)){
                     this.guardSelected.x = Math.floor(x / 80) * 80;
                     this.guardSelected.y = Math.floor((y - this.topOffset) / 80) * 80;
-                    this.placeGuard(this.dragObj);
+                    this.placeGuard(this.guardSelected);
                 }
-            }
+            } 
+            this.guardSelected = null;
+            this.activeCell = null;
         })
 
         window.addEventListener("click", e => {
@@ -242,11 +253,14 @@ class Game {
         })
     }
 
-    selectShopItem(mouseX, mouseY) {
+    selectShopItem(x, y) {
         for (const item of this.shop) {
-            if (mouseX > item.x && mouseX < (item.x + item.width) && mouseY > item.y ** mouseY < (item.y + item.height)) {
+            if (x > item.x && x < (item.x + item.boxSize) && y > item.y && y < (item.y + item.boxSize)) {
                 // this.drag = true;
-                this.guardSelected = new Guard({});
+                const guard = item.convert();
+                if (this.cost > guard.cost){
+                    this.guardSelected = guard;
+                }
             }
         }
     }
@@ -262,9 +276,13 @@ class Game {
     }
 
     drawActiveCell(ctx){
-        if (this.activeCell){
-            ctx.fillStyle = "rgba(0,0,0,0.2)";
-            ctx.fillRect(this.activeCell.x, this.activeCell.y, 79, 79);
+        if (this.guardSelected){
+            let x = Math.floor(this.mouseX / 80) * 80;
+            let y = Math.floor((this.mouseY - this.topOffset) / 80) * 80 + this.topOffset;
+            if (this.validCell(x, y)){
+                ctx.fillStyle = "rgba(0,0,0,0.2)";
+                ctx.fillRect(x, y, 79, 79);
+            }
         }
     }
 
@@ -291,6 +309,16 @@ class Game {
                 this.animate();
             }
         }
+    }
+
+    updateWaveTime() {
+        this.firstWaveStart += this.pausedTime;
+        this.firstWaveEnd += this.pausedTime;
+        this.secondWaveStart += this.pausedTime;
+        this.secondWaveEnd += this.pausedTime;
+        this.lastCostTime += this.pausedTime;
+        this.lastWaveTime += this.pausedTime;
+        this.pausedTime = 0;
     }
 
     play(){
