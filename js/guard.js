@@ -1,16 +1,24 @@
 
 class Guard {
     constructor(spec) {
+        this.topOffset = TOP_OFFSET;
+        this.height = 60;
+        this.width = 60;
+
         this.x = spec.x || 240;
         this.y = spec.y || 0;
 
         this.health = spec.hp || 1000;
-        this.attack = spec.atk || 0;
+        this.maxHealth = spec.hp || 1000;
+
+        this.attack = spec.atk || 10;
         this.attackInterval = 1000;
 
         this.enemiesInRange = [];
         this.lastAttacked = 0;
-        this.range = 3 * 80;
+        this.range = (spec.range || 3) * 80;
+
+        this.attacking = spec.attacking;
 
     }
 
@@ -37,8 +45,19 @@ class Guard {
 
     draw(ctx) {
         // ctx.drawImage(this.image, this.x)
+        ctx.fillStyle = "blue";
+        ctx.fillRect(this.x + 10, this.y + this.topOffset + 10, this.width, this.height);
+        this.drawHealthBar(ctx);
+    }
+
+    drawHealthBar(ctx){
+        const barLength = this.width;
+        const barHeight = 5;
+
+        ctx.fillStyle = "gray"
+        ctx.fillRect(this.x + 10, this.y + this.topOffset + this.height + 15, barLength, barHeight);
         ctx.fillStyle = "green";
-        ctx.fillRect(this.x, this.y + 60, 60, 60);
+        ctx.fillRect(this.x + 10, this.y + this.topOffset + this.height + 15, barLength * (this.health / this.maxHealth), barHeight);
     }
 
     update(ctx, time, enemies) {

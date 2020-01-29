@@ -2,20 +2,23 @@ const PATH = [[0, 1], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [0, 1], [0
 
 class Minion {
     constructor(spec){
+        this.topOffset = TOP_OFFSET;
         this.health = spec.hp || 100;
         this.attack = spec.atk || 40;
         this.moveSpeed = spec.moveSpeed || 50;
-        this.moveLength = 5;
+        this.moveLength = 2;
         this.attackSpeed = spec.attackSpeed || 1000;
         this.size = 60;
 
-        this.pos = spec.pos || [0, 0];
         this.x = 0;
-        this.y = 0;
+        this.y = (spec.row * this.topOffset + 20 * spec.row + 10) || 0;
 
         this.lastAttack = 0;
         this.lastMove = 0;
         this.target = null;
+
+        this.walking = spec.walking;
+        this.attacking = spec.attacking;
     }
 
     checkBlocked(guards){
@@ -30,8 +33,8 @@ class Minion {
     strike(time){
         if (this.target instanceof Guard){
             if (time - this.lastAttack > this.attackSpeed) {
-                console.dir(this.target)
-                console.log("ghp" + this.target.health)
+                // console.dir(this.target)
+                // console.log("ghp" + this.target.health)
                 this.target.health -= this.attack;
                 this.lastAttack = time;
             }
@@ -40,20 +43,12 @@ class Minion {
 
     move(time){
         if (!this.target){
-            if (time - this.lastMove > 100){
+            if (time - this.lastMove > 50){
                 this.x += this.moveLength;
                 this.lastMove = time;
-                console.log(this.x)
+                // console.log(this.x)
             }
         }
-
-    }
-
-    destroy(){
-        if (this.hp <= 0 || this.touchDown()){
-            this.pos = [];
-        }
-
     }
 
     touchDown(){
@@ -80,7 +75,7 @@ class Minion {
     draw(ctx) {
         // ctx.drawImage(this.image, this.x)
         ctx.fillStyle = "black";
-        ctx.fillRect(this.x, this.y + 60, this.size, this.size);
+        ctx.fillRect(this.x, this.y + this.topOffset, this.size, this.size);
     }
 
 }

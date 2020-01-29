@@ -2,6 +2,8 @@ class Board {
     constructor(){
         this.width = 800;
         this.height = 600;
+        this.topOffset = TOP_OFFSET;
+
         this.background = new Array(6).fill(0).map(() => new Array(8).fill("#d3d3d3"));
         this.background[1][0] = "red";
   
@@ -16,10 +18,10 @@ class Board {
                 bgx.beginPath();
                 bgx.lineWidth = "1";
                 bgx.strokeStyle = "black";
-                bgx.rect(i * 80, j * 80 + 50, 80, 80)
+                bgx.rect(i * 80, j * 80 + this.topOffset, 80, 80)
                 bgx.stroke();
                 bgx.fillStyle = this.background[j][i];
-                bgx.fillRect(i * 80, j * 80 + 50, 80, 80)
+                bgx.fillRect(i * 80, j * 80 + this.topOffset, 80, 80)
             }
         }
     }
