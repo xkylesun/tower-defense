@@ -1,12 +1,13 @@
 
+import Guard from "./guard";
+import { cloneDeep } from "lodash";
+import { TOP_OFFSET } from "./game";
 
-class ShopItem {
+export default class ShopItem {
     constructor(spec){
         this.topOffset = TOP_OFFSET;
         this.boxSize = 80;
-
-        const test = document.getElementById("sprite-test");
-        this.image = test;
+        this.guard = spec.guard || new Guard({});
         this.idx = spec.idx;
         this.x = 180 + spec.idx * 82;
         this.y = 400 + this.topOffset + 22;
@@ -21,10 +22,12 @@ class ShopItem {
         ctx.rect(180 + 80 * this.idx, 400 + this.topOffset + 20, this.boxSize, this.boxSize)
         ctx.stroke();
 
-        ctx.drawImage(this.image, 190 + 80 * this.idx, 400 + this.topOffset + 30, 60, 60)
+        const image = new Image();
+        image.src = this.guard.image;
+        ctx.drawImage(image, 190 + 80 * this.idx, 400 + this.topOffset + 30, 60, 60)
     }
 
     convert(){
-        return new Guard({});
+        return cloneDeep(this.guard);
     }
 }

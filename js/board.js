@@ -1,4 +1,6 @@
-class Board {
+import { TOP_OFFSET } from "./game";
+
+export default class Board {
     constructor(){
         this.width = 800;
         this.height = 600;

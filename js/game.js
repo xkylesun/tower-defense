@@ -1,6 +1,15 @@
-TOP_OFFSET = 60;
 
-class Game {
+export const TOP_OFFSET = 60;
+
+import Minion from "./minion";
+import Guard from "./guard";
+import Board from "./board";
+import ShopItem from "./shop_item";
+
+import playButton from "../assets/play-button.svg";
+import pauseButton from "../assets/pause-button.svg";
+
+export default class Game {
     constructor(){
         this.board = new Board();
         this.topOffset = TOP_OFFSET;
@@ -102,8 +111,11 @@ class Game {
         const ctx = this.ctx;
         ctx.fillStyle = "gray";
         ctx.fillRect(740, 10, 40, 40);
-        const playIcon = document.getElementById("icon-play");
-        const pauseIcon = document.getElementById("icon-pause");
+        const playIcon = new Image();
+        const pauseIcon = new Image();
+        playIcon.src = playButton;
+        pauseIcon.src = pauseButton;
+
         let control = this.paused ? playIcon : pauseIcon;
         ctx.drawImage(control, 745, 15, 30, 30);
     }
@@ -159,7 +171,10 @@ class Game {
         if (this.guardSelected){
             ctx.save();
             ctx.globalAlpha = 0.5;
-            ctx.drawImage(this.guardSelected.image, this.mouseX - 30, this.mouseY - 30, 60, 60);
+
+            const image = new Image();
+            image.src = this.guardSelected.image;
+            ctx.drawImage(image, this.mouseX - 30, this.mouseY - 30, 60, 60);
             ctx.restore();
         }
     }
@@ -327,9 +342,3 @@ class Game {
     }
 
 }
-
-window.addEventListener('DOMContentLoaded', () => {
-    const game = new Game();
-    window.game = game;
-    game.play();
-});
