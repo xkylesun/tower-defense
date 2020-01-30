@@ -73,8 +73,6 @@ export default class Guard {
     }
 
     dead(){
-        if (this.health <= 0) console.log("dead")
-
         return this.health <= 0;
     }
 

@@ -19,8 +19,6 @@ export default class Dragon extends Minion {
         this.moving = moving;
         this.attacking = attacking;
 
-        // this.image = test;
-
         this.shift = 0;
         this.lastShift = 0;
         this.shiftInteval = 100;

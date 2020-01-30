@@ -23,40 +23,111 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
+
 body {
 	line-height: 1;
 }
+
 ol, ul {
 	list-style: none;
 }
+
 blockquote, q {
 	quotes: none;
 }
+
 blockquote:before, blockquote:after,
 q:before, q:after {
 	content: '';
 	content: none;
 }
+
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
 
+a {
+	text-decoration: none;
+}
+
+.head-frame{
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	border-bottom: 1px solid gray;
+}
+
+.title {
+	padding: 20px;
+	font-size: 36px;
+	font-weight: 500;
+	margin: 0 auto;
+}
+
+.desc {
+	padding-bottom: 20px;
+	margin: 0 auto;
+}
+
+.credit-frame {
+	position: absolute;
+	right: 20px;
+}
+
+.icon {
+    height: 36px;
+    width: 36px;
+    margin: 0 20px;
+}
+
+.body-frame {
+	display: flex;
+	justify-content: center;
+}
+
+.body-frame {
+	widows: 1400px;
+	display: flex;
+	justify-content: center;
+	/* border-bottom: 1px solid gray; */
+	margin-bottom: 50px;
+}
+
+.canvas-frame {
+	margin: 30px 0 30px 30px;
+	padding: 10px;
+	border: 1px solid gray;
+	background-color: gray;
+}
+
+.desc-frame{
+	margin: 30px;
+	/* padding: 10px; */
+	width: 300px;
+	border: 1px solid gray;
+}
+
 #canvas {
+	width: 800px;
     background: none;
     z-index: 2;
     position: absolute;
 	float: left;
-
 }
 
 #background {
 	z-index: 1;
 
 }
+
+
+
+
 

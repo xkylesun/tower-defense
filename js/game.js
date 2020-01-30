@@ -1,15 +1,18 @@
 
 export const TOP_OFFSET = 60;
 
-import Minion from "./minion";
 import Mushroom from "./mushroom";
 import Dragon from "./dragon";
+
 import Guard from "./guard";
+
 import Board from "./board";
 import ShopItem from "./shop_item";
 
 import playButton from "../assets/play-button.svg";
 import pauseButton from "../assets/pause-button.svg";
+
+import { toCanvasX, toCanvasY } from "./util";
 
 export default class Game {
     constructor(){
@@ -263,22 +266,22 @@ export default class Game {
 
     addListeners() {
         window.addEventListener("mousemove", e => {
-            let x = e.clientX;
-            let y = e.clientY;
+            let x = toCanvasX(this.c, e);
+            let y = toCanvasY(this.c, e);
             this.mouseX = x;
             this.mouseY = y;
         });
 
         window.addEventListener("mousedown", e => {
-            let x = e.clientX;
-            let y = e.clientY;
+            let x = this.mouseX;
+            let y = this.mouseY;
             this.selectShopItem(x, y);
         })
 
         window.addEventListener("mouseup", e => {
             if (this.guardSelected){
-                let x = e.clientX;
-                let y = e.clientY;
+                let x = this.mouseX;
+                let y = this.mouseY;
                 if (this.validCell(x, y)){
                     this.guardSelected.x = Math.floor(x / 80) * 80;
                     this.guardSelected.y = Math.floor((y - this.topOffset) / 80) * 80;
@@ -290,8 +293,8 @@ export default class Game {
         })
 
         window.addEventListener("click", e => {
-            let x = e.clientX;
-            let y = e.clientY;
+            let x = this.mouseX;
+            let y = this.mouseY;
             this.pauseGame(x, y)
         })
     }
@@ -308,7 +311,7 @@ export default class Game {
     }
 
     validCell(x, y){
-        if (x > 0 && x < this.width && y > 60 && y < 460){
+        if (x > 80 && x < this.width - 80 && y > 60 && y < 460){
             if (this.guards[Math.floor((y - this.topOffset) / 80)][Math.floor(x / 80)] === null){
                 return true;
             }
