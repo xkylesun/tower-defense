@@ -12,18 +12,17 @@ export default class Guard {
         this.y = spec.y || 0;
 
         this.health = spec.hp || 1000;
-        this.maxHealth = spec.hp || 1000;
-
+        this.maxHealth = this.health;
         this.attack = spec.atk || 20;
         this.attackInterval = 1000;
+        this.range = (spec.range || 3) * 80;
+        this.cost = spec.cost || 7;
+        this.standing = spec.standing;
+        this.attacking = spec.attacking;
 
         this.enemiesInRange = [];
         this.lastAttacked = 0;
-        this.range = (spec.range || 3) * 80;
-        this.cost = spec.cost || 7;
-
-        this.attacking = spec.attacking;
-
+        
         this.image = test;
 
     }
