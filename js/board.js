@@ -1,4 +1,6 @@
-class Board {
+import { TOP_OFFSET } from "./game";
+
+export default class Board {
     constructor(){
         this.width = 800;
         this.height = 600;
@@ -6,7 +8,10 @@ class Board {
 
         this.background = new Array(6).fill(0).map(() => new Array(8).fill("#d3d3d3"));
         this.background[1][0] = "red";
-  
+        
+        for (let i = 0; i < 5; i++){
+            this.background[i][9] = "lightblue";
+        }
     }
 
     draw(bgx){

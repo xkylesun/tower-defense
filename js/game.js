@@ -1,15 +1,29 @@
-TOP_OFFSET = 60;
 
-class Game {
+export const TOP_OFFSET = 60;
+
+import Minion from "./minion";
+import Guard from "./guard";
+import Board from "./board";
+import ShopItem from "./shop_item";
+
+import playButton from "../assets/play-button.svg";
+import pauseButton from "../assets/pause-button.svg";
+
+export default class Game {
     constructor(){
         this.board = new Board();
         this.topOffset = TOP_OFFSET;
         this.width = 800;
         this.height = 600;
         this.cost = 9;
-        this.missed = 0;
-        this.enemiesRemaining = 16;
-        this.guardsRemaining = 8;
+        this.life = 3;
+        this.kill = 0;
+
+        this.enemiesTotal = 100;
+        this.enemiesRemaining = this.enemiesTotal;
+
+        // this.guardsRemaining = 8;
+
         this.enemies = [];
         this.guards = new Array(6).fill(0).map(() => new Array(10).fill(null));
 
@@ -32,7 +46,7 @@ class Game {
         this.firstWaveStart = startTime + 5000;
         this.firstWaveEnd = startTime + 15000;
         this.secondWaveStart = startTime + 20000;
-        this.secondWaveEnd = startTime + 55000;
+        this.secondWaveEnd = startTime + 155000;
 
         this.guardSelected = null;
         this.mouseX = null;
@@ -91,10 +105,24 @@ class Game {
         this.board.draw(bgx);
     }
 
-    drawCost(ctx){
+    drawStat(ctx){
+
+        //life
         ctx.fillStyle = "white";
         // ctx.fillRect(700, 550, 30, 15)
 		ctx.font = 'bold 16px Arial';
+        ctx.fillText('Life: ' + this.life, 300, 35);
+
+        // remaining
+        ctx.fillStyle = "white";
+        // ctx.fillRect(700, 550, 30, 15)
+        ctx.font = 'bold 16px Arial';
+        ctx.fillText('Enemies: ' + (this.enemiesRemaining + this.enemies.length) + "/" + this.enemiesTotal, 400, 35);
+
+        // cost
+        ctx.fillStyle = "white";
+        // ctx.fillRect(700, 550, 30, 15)
+        ctx.font = 'bold 16px Arial';
         ctx.fillText('Cost: ' + this.cost, 700, 560);
     }
 
@@ -102,8 +130,11 @@ class Game {
         const ctx = this.ctx;
         ctx.fillStyle = "gray";
         ctx.fillRect(740, 10, 40, 40);
-        const playIcon = document.getElementById("icon-play");
-        const pauseIcon = document.getElementById("icon-pause");
+        const playIcon = new Image();
+        const pauseIcon = new Image();
+        playIcon.src = playButton;
+        pauseIcon.src = pauseButton;
+
         let control = this.paused ? playIcon : pauseIcon;
         ctx.drawImage(control, 745, 15, 30, 30);
     }
@@ -126,10 +157,11 @@ class Game {
         for (const enemy of this.enemies) {
             enemy.update(this.ctx, time, this.guards);
             if (enemy.touchDown()) {
-                this.missed += 1;
+                this.life -= 1;
                 this.enemies = this.enemies.filter(min => (min !== enemy));
             };
             if (enemy.dead()) {
+                this.kill += 1;
                 this.enemies = this.enemies.filter(min => (min !== enemy));
             }
         }
@@ -159,7 +191,10 @@ class Game {
         if (this.guardSelected){
             ctx.save();
             ctx.globalAlpha = 0.5;
-            ctx.drawImage(this.guardSelected.image, this.mouseX - 30, this.mouseY - 30, 60, 60);
+
+            const image = new Image();
+            image.src = this.guardSelected.image;
+            ctx.drawImage(image, this.mouseX - 30, this.mouseY - 30, 60, 60);
             ctx.restore();
         }
     }
@@ -174,7 +209,7 @@ class Game {
 
         let time = new Date().getTime();
         this.genCost(time);
-        this.drawCost(ctx);
+        this.drawStat(ctx);
 
         this.firstWave(time);
         this.secondWave(time);
@@ -212,8 +247,8 @@ class Game {
     }
 
     lost(){
-        if (this.missed > 0){
-            this.gameOver = true;
+        if (this.life <= 0){
+            setTimeout(() => this.gameOver = true, 2000);
             console.log("you lost")
         }
     }
@@ -256,9 +291,8 @@ class Game {
     selectShopItem(x, y) {
         for (const item of this.shop) {
             if (x > item.x && x < (item.x + item.boxSize) && y > item.y && y < (item.y + item.boxSize)) {
-                // this.drag = true;
                 const guard = item.convert();
-                if (this.cost > guard.cost){
+                if (this.cost >= guard.cost){
                     this.guardSelected = guard;
                 }
             }
@@ -267,7 +301,6 @@ class Game {
 
     validCell(x, y){
         if (x > 0 && x < this.width && y > 60 && y < 460){
-            console.log(y)
             if (this.guards[Math.floor((y - this.topOffset) / 80)][Math.floor(x / 80)] === null){
                 return true;
             }
@@ -279,7 +312,7 @@ class Game {
         if (this.guardSelected){
             let x = Math.floor(this.mouseX / 80) * 80;
             let y = Math.floor((this.mouseY - this.topOffset) / 80) * 80 + this.topOffset;
-            if (this.validCell(x, y)){
+            if (this.validCell(this.mouseX, this.mouseY)){
                 ctx.fillStyle = "rgba(0,0,0,0.2)";
                 ctx.fillRect(x, y, 79, 79);
             }
@@ -299,10 +332,7 @@ class Game {
         if (x > 745 && x < 775 && y > 15 && y < 45) {
             this.paused = !this.paused;
             if (this.paused) {
-                // update paused time
                 this.pauseInterval = setInterval(() => this.pausedTime += 100, 100)
-                // console.log(this.secondWaveStart);
-                // console.dir(this.pauseInterval)
             } else {
                 this.updateWaveTime();
                 clearInterval(this.pauseInterval);
@@ -327,9 +357,3 @@ class Game {
     }
 
 }
-
-window.addEventListener('DOMContentLoaded', () => {
-    const game = new Game();
-    window.game = game;
-    game.play();
-});

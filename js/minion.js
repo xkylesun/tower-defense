@@ -1,9 +1,14 @@
-const PATH = [[0, 1], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [0, 1], [0, 1], [0, 1], [0, 1], [1, 0]];
+// const PATH = [[0, 1], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [0, 1], [0, 1], [0, 1], [0, 1], [1, 0]];
+import Guard from "./guard";
+import { TOP_OFFSET } from "./game";
 
-class Minion {
+import test from "../assets/test.png";
+
+export default class Minion {
     constructor(spec){
         this.topOffset = TOP_OFFSET;
         this.health = spec.hp || 100;
+        this.maxHealth = spec.hp || 100;
         this.attack = spec.atk || 40;
         this.moveSpeed = spec.moveSpeed || 50;
         this.moveLength = 4;
@@ -19,6 +24,8 @@ class Minion {
 
         this.walking = spec.walking;
         this.attacking = spec.attacking;
+
+        this.image = test;
     }
 
     checkBlocked(guards){
@@ -33,8 +40,6 @@ class Minion {
     strike(time){
         if (this.target instanceof Guard){
             if (time - this.lastAttack > this.attackSpeed) {
-                // console.dir(this.target)
-                // console.log("ghp" + this.target.health)
                 this.target.health -= this.attack;
                 this.lastAttack = time;
             }
@@ -46,13 +51,11 @@ class Minion {
             if (time - this.lastMove > 50){
                 this.x += this.moveLength;
                 this.lastMove = time;
-                // console.log(this.x)
             }
         }
     }
 
     touchDown(){
-        // return JSON.stringify(this.pos) === JSON.stringify([5,7])
         if (this.x >= 800) console.log("touchdown")
         return this.x >= 800;
     }
@@ -73,9 +76,20 @@ class Minion {
     }
 
     draw(ctx) {
-        // ctx.drawImage(this.image, this.x)
-        ctx.fillStyle = "black";
-        ctx.fillRect(this.x, this.y + this.topOffset, this.size, this.size);
+        const image = new Image();
+        image.src = this.image;
+        ctx.drawImage(image, this.x, this.y + this.topOffset, this.size, this.size);
+        this.drawHealthBar(ctx);
+    }
+
+    drawHealthBar(ctx) {
+        const barLength = this.size;
+        const barHeight = 5;
+
+        ctx.fillStyle = "gray"
+        ctx.fillRect(this.x, this.y + this.topOffset + this.size + 5, barLength, barHeight);
+        ctx.fillStyle = "green";
+        ctx.fillRect(this.x, this.y + this.topOffset + this.size + 5, barLength * (this.health / this.maxHealth), barHeight);
     }
 
 }
