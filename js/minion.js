@@ -77,7 +77,7 @@ export default class Minion {
     draw(ctx) {
         const image = new Image();
         image.src = this.image;
-        ctx.drawImage(image, this.x, this.y, this.size, this.size);
+        ctx.drawImage(image, this.x, this.y + this.topOffset, this.size, this.size);
     }
 
 }
