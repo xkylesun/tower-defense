@@ -8,6 +8,7 @@ export default class Minion {
     constructor(spec){
         this.topOffset = TOP_OFFSET;
         this.health = spec.hp || 100;
+        this.maxHealth = spec.hp || 100;
         this.attack = spec.atk || 40;
         this.moveSpeed = spec.moveSpeed || 50;
         this.moveLength = 4;
@@ -78,6 +79,17 @@ export default class Minion {
         const image = new Image();
         image.src = this.image;
         ctx.drawImage(image, this.x, this.y + this.topOffset, this.size, this.size);
+        this.drawHealthBar(ctx);
+    }
+
+    drawHealthBar(ctx) {
+        const barLength = this.size;
+        const barHeight = 5;
+
+        ctx.fillStyle = "gray"
+        ctx.fillRect(this.x, this.y + this.topOffset + this.size + 5, barLength, barHeight);
+        ctx.fillStyle = "green";
+        ctx.fillRect(this.x, this.y + this.topOffset + this.size + 5, barLength * (this.health / this.maxHealth), barHeight);
     }
 
 }
