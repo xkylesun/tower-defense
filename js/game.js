@@ -111,7 +111,7 @@ export default class Game {
         ctx.fillStyle = "white";
         // ctx.fillRect(700, 550, 30, 15)
 		ctx.font = 'bold 16px Arial';
-        ctx.fillText('Life: ' + this.life, 300, 35);
+        ctx.fillText('Life: ' + Math.max(this.life, 0), 300, 35);
 
         // remaining
         ctx.fillStyle = "white";
