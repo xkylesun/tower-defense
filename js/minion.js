@@ -7,25 +7,25 @@ import test from "../assets/test.png";
 export default class Minion {
     constructor(spec){
         this.topOffset = TOP_OFFSET;
+
+        //below are customizable
         this.health = spec.hp || 100;
-        this.maxHealth = spec.hp || 100;
+        this.maxHealth = this.health || 100;
         this.attack = spec.atk || 40;
         this.moveSpeed = spec.moveSpeed || 50;
         this.moveLength = 4;
         this.attackSpeed = spec.attackSpeed || 1000;
-        this.size = 60;
+        this.walking = spec.walking;
+        this.attacking = spec.attacking;
+        this.image = test;
 
+        this.size = 60;
         this.x = 0;
         this.y = (spec.row * this.topOffset + 20 * spec.row + 10) || 0;
 
         this.lastAttack = 0;
         this.lastMove = 0;
         this.target = null;
-
-        this.walking = spec.walking;
-        this.attacking = spec.attacking;
-
-        this.image = test;
     }
 
     checkBlocked(guards){
@@ -87,9 +87,9 @@ export default class Minion {
         const barHeight = 5;
 
         ctx.fillStyle = "gray"
-        ctx.fillRect(this.x, this.y + this.topOffset + this.size + 5, barLength, barHeight);
+        ctx.fillRect(this.x, this.y + this.topOffset + this.size, barLength, barHeight);
         ctx.fillStyle = "green";
-        ctx.fillRect(this.x, this.y + this.topOffset + this.size + 5, barLength * (this.health / this.maxHealth), barHeight);
+        ctx.fillRect(this.x, this.y + this.topOffset + this.size, barLength * (this.health / this.maxHealth), barHeight);
     }
 
 }

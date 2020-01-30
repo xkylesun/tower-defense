@@ -49,9 +49,6 @@ export default class Guard {
     }
 
     draw(ctx) {
-        // ctx.drawImage(this.image, this.x)
-        // ctx.fillStyle = "blue";
-        // ctx.fillRect(this.x + 10, this.y + this.topOffset + 10, this.width, this.height);
         const image = new Image();
         image.src = this.image;
 

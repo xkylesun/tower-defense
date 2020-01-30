@@ -2,6 +2,8 @@
 export const TOP_OFFSET = 60;
 
 import Minion from "./minion";
+import Mushroom from "./mushroom";
+import Dragon from "./dragon";
 import Guard from "./guard";
 import Board from "./board";
 import ShopItem from "./shop_item";
@@ -44,9 +46,11 @@ export default class Game {
 
         let startTime = new Date().getTime();
         this.firstWaveStart = startTime + 5000;
-        this.firstWaveEnd = startTime + 15000;
-        this.secondWaveStart = startTime + 20000;
+        this.firstWaveEnd = startTime + 20000;
+        this.secondWaveStart = startTime + 25000;
         this.secondWaveEnd = startTime + 155000;
+
+        this.waveInteval = 10000;
 
         this.guardSelected = null;
         this.mouseX = null;
@@ -56,6 +60,8 @@ export default class Game {
         this.c.width = this.width;
         this.c.height = this.height;
         this.ctx = this.c.getContext("2d");
+        // this.ctx.imageSmoothingEnabled = false;
+        this.ctx.imageSmoothingQuality = "high"
 
         this.addListeners = this.addListeners.bind(this);
     }
@@ -69,18 +75,20 @@ export default class Game {
         }
     }
 
-    genEnemy(row){
+    genEnemy(Klass, row){
         if (this.enemiesRemaining > 0){
-            let minion = new Minion({ row: row })
-            this.enemies.push(minion);
+            // new Minion({ row: row })
+            let enemy = new Klass({row: row});
+            this.enemies.push(enemy);
             this.enemiesRemaining -= 1;
         }
     }
 
     firstWave(time){
         if (time > this.firstWaveStart && time < this.firstWaveEnd) {
-            if (time - this.lastWaveTime > 5000) {
-                this.genEnemy(0);
+            if (time - this.lastWaveTime > this.waveInteval) {
+                // this.genEnemy(Mushroom, 1);
+                this.genEnemy(Dragon, 1);
                 this.lastWaveTime = time;
             }
         }
@@ -88,10 +96,10 @@ export default class Game {
 
     secondWave(time){
         if (time > this.secondWaveStart && time < this.secondWaveEnd ){
-            if (time - this.lastWaveTime > 5000){
-                this.genEnemy(0);
-                this.genEnemy(1);
-                this.genEnemy(2);
+            if (time - this.lastWaveTime > this.waveInteval){
+                this.genEnemy(Mushroom, 0);
+                this.genEnemy(Mushroom, 1);
+                this.genEnemy(Mushroom, 2);
                 this.lastWaveTime = time;
             }
         }
