@@ -1,13 +1,19 @@
-const PATH = [[0, 1], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [0, 1], [0, 1], [0, 1], [0, 1], [1, 0]];
+// const PATH = [[0, 1], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [0, 1], [0, 1], [0, 1], [0, 1], [1, 0]];
+import { TOP_OFFSET } from "./game";
+import Guard from "./guard";
 
-class Minion {
+export default class Minion {
     constructor(spec){
         this.topOffset = TOP_OFFSET;
+
+        // customize here
         this.health = spec.hp || 100;
+        this.maxHealth = spec.hp || 100;
         this.attack = spec.atk || 40;
         this.moveSpeed = spec.moveSpeed || 50;
         this.moveLength = 4;
         this.attackSpeed = spec.attackSpeed || 1000;
+
         this.size = 60;
 
         this.x = 0;
@@ -72,10 +78,21 @@ class Minion {
         this.draw(ctx);
     }
 
+    drawHealthBar(ctx) {
+        const barLength = this.size;
+        const barHeight = 5;
+
+        ctx.fillStyle = "gray"
+        ctx.fillRect(this.x, this.y + this.topOffset + this.size + 5, barLength, barHeight);
+        ctx.fillStyle = "green";
+        ctx.fillRect(this.x, this.y + this.topOffset + this.size + 5, barLength * (this.health / this.maxHealth), barHeight);
+    }
+
     draw(ctx) {
         // ctx.drawImage(this.image, this.x)
         ctx.fillStyle = "black";
         ctx.fillRect(this.x, this.y + this.topOffset, this.size, this.size);
+        this.drawHealthBar(ctx);
     }
 
 }

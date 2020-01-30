@@ -1,5 +1,7 @@
+import { TOP_OFFSET } from "./game";
+import test from "../assets/temp/test.png";
 
-class Guard {
+export default class Guard {
     constructor(spec) {
         this.topOffset = TOP_OFFSET;
         this.height = 60;
@@ -21,8 +23,6 @@ class Guard {
 
         this.attacking = spec.attacking;
 
-
-        const test = document.getElementById("sprite-test");
         this.image = test;
 
     }
@@ -48,10 +48,9 @@ class Guard {
     }
 
     draw(ctx) {
-        // ctx.drawImage(this.image, this.x)
-        // ctx.fillStyle = "blue";
-        // ctx.fillRect(this.x + 10, this.y + this.topOffset + 10, this.width, this.height);
-        ctx.drawImage(this.image, this.x + 10, this.y + this.topOffset + 10, this.width, this.height);
+        const image = new Image();
+        image.src = test;
+        ctx.drawImage(image, this.x + 10, this.y + this.topOffset + 10, this.width, this.height);
         this.drawHealthBar(ctx);
     }
 
@@ -72,8 +71,6 @@ class Guard {
     }
 
     dead(){
-        if (this.health <= 0) console.log("dead")
-
         return this.health <= 0;
     }
 
