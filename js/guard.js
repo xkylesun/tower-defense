@@ -23,7 +23,14 @@ export default class Guard {
         this.enemiesInRange = [];
         this.lastAttacked = 0;
         
-        this.image = test;
+        this.image = new Image();
+        this.image.src = test;
+
+        this.moving = new Image();
+        this.moving.src = test;
+
+        this.attacking = new Image();
+        this.attacking.src = test;
 
     }
 
@@ -48,10 +55,7 @@ export default class Guard {
     }
 
     draw(ctx) {
-        const image = new Image();
-        image.src = this.image;
-
-        ctx.drawImage(image, this.x + 10, this.y + this.topOffset + 10, this.width, this.height);
+        ctx.drawImage(this.image, this.x + 10, this.y + this.topOffset + 10, this.width, this.height);
         this.drawHealthBar(ctx);
     }
 

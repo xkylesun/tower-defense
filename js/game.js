@@ -48,12 +48,12 @@ export default class Game {
         this.gameOver =false;
 
         let startTime = new Date().getTime();
-        this.firstWaveStart = startTime + 5000;
+        this.firstWaveStart = startTime;
         this.firstWaveEnd = startTime + 20000;
         this.secondWaveStart = startTime + 25000;
         this.secondWaveEnd = startTime + 155000;
 
-        this.waveInteval = 10000;
+        this.waveInterval = 10000;
 
         this.guardSelected = null;
         this.mouseX = null;
@@ -64,14 +64,18 @@ export default class Game {
         this.c.height = this.height;
         this.ctx = this.c.getContext("2d");
         // this.ctx.imageSmoothingEnabled = false;
-        this.ctx.imageSmoothingQuality = "high"
+        this.ctx.imageSmoothingQuality = "high";
+
+        this.playIcon = new Image();
+        this.playIcon.src = playButton;
+        this.pauseIcon = new Image();
+        this.pauseIcon.src = pauseButton;
 
         this.addListeners = this.addListeners.bind(this);
     }
 
     genCost(){
         let time = new Date().getTime()
-        // console.log("passed" + (time - this.lastCostTime) / 1000)
         if (time - this.lastCostTime > 2000){
             this.cost += 1;
             this.lastCostTime = time;
@@ -80,7 +84,6 @@ export default class Game {
 
     genEnemy(Klass, row){
         if (this.enemiesRemaining > 0){
-            // new Minion({ row: row })
             let enemy = new Klass({row: row});
             this.enemies.push(enemy);
             this.enemiesRemaining -= 1;
@@ -89,31 +92,36 @@ export default class Game {
 
     firstWave(time){
         if (time > this.firstWaveStart && time < this.firstWaveEnd) {
-            if (time - this.lastWaveTime > this.waveInteval) {
-                // this.genEnemy(Mushroom, 1);
-                this.genEnemy(Dragon, 1);
+            this.board.background[2][0] = "red";
+            if (time - this.lastWaveTime > this.waveInterval) {
+                setTimeout(() => {
+                    this.genEnemy(Mushroom, 2);
+                }, 2000)
                 this.lastWaveTime = time;
             }
         }
+    }
+
+    randomEnemy(){
+        let enemies = [Mushroom, Mushroom, Dragon];
+        return enemies[Math.floor(Math.random() * enemies.length)]
     }
 
     secondWave(time){
         if (time > this.secondWaveStart && time < this.secondWaveEnd ){
-            if (time - this.lastWaveTime > this.waveInteval){
-                this.genEnemy(Mushroom, 0);
-                this.genEnemy(Mushroom, 1);
-                this.genEnemy(Mushroom, 2);
+            for (let i = 1; i < 4; i++) {
+                this.board.background[i][0] = "red";
+            }
+            if (time - this.lastWaveTime > this.waveInterval){
+                setTimeout(() => {
+                    this.genEnemy(this.randomEnemy(), 1);
+                    setTimeout(() => this.genEnemy(this.randomEnemy(), 2), 3000);
+                    this.genEnemy(this.randomEnemy(), 3);
+                }, 2000)
                 this.lastWaveTime = time;
+
             }
         }
-    }
-
-    drawBoard() {
-        const bg = document.getElementById("background");
-        bg.width = this.width;
-        bg.height = this.height;
-        const bgx = bg.getContext("2d");
-        this.board.draw(bgx);
     }
 
     drawStat(ctx){
@@ -141,12 +149,7 @@ export default class Game {
         const ctx = this.ctx;
         ctx.fillStyle = "gray";
         ctx.fillRect(740, 10, 40, 40);
-        const playIcon = new Image();
-        const pauseIcon = new Image();
-        playIcon.src = playButton;
-        pauseIcon.src = pauseButton;
-
-        let control = this.paused ? playIcon : pauseIcon;
+        let control = this.paused ? this.playIcon : this.pauseIcon;
         ctx.drawImage(control, 745, 15, 30, 30);
     }
 
@@ -202,15 +205,22 @@ export default class Game {
         if (this.guardSelected){
             ctx.save();
             ctx.globalAlpha = 0.5;
-
-            const image = new Image();
-            image.src = this.guardSelected.image;
-            ctx.drawImage(image, this.mouseX - 30, this.mouseY - 30, 60, 60);
+            ctx.drawImage(this.guardSelected.image, this.mouseX - 30, this.mouseY - 30, 60, 60);
             ctx.restore();
         }
     }
 
+    drawBoard(){
+        const bg = document.getElementById("background");
+        bg.width = this.width;
+        bg.height = this.height;
+        const bgx = bg.getContext("2d");
+        this.board.draw(bgx);
+    }
+
     update(){
+        this.drawBoard()
+
         const ctx = this.ctx;
         ctx.clearRect(0, 0, this.width, this.height);
 
@@ -229,6 +239,7 @@ export default class Game {
         this.drawGuards(time);
 
         this.drawShop(ctx);
+        this.drawControl();
 
         this.win();
         this.lost();
@@ -240,9 +251,6 @@ export default class Game {
             this.drawControl();
         } else {
             this.update();
-            this.drawBoard();
-            this.drawControl();
-
             if (!this.gameOver){
                 requestAnimationFrame(this.animate.bind(this))
             } 
@@ -340,7 +348,7 @@ export default class Game {
     }
 
     pauseGame(x, y) {
-        if (x > 745 && x < 775 && y > 15 && y < 45) {
+        if (x > 740 && x < 780 && y > 10 && y < 50) {
             this.paused = !this.paused;
             if (this.paused) {
                 this.pauseInterval = setInterval(() => this.pausedTime += 100, 100)

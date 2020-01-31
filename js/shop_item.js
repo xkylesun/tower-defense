@@ -1,5 +1,9 @@
 
 import Guard from "./guard";
+import Priest from "./priest";
+import Warrior from "./warrior";
+import Mage from "./mage";
+
 import { cloneDeep } from "lodash";
 import { TOP_OFFSET } from "./game";
 
@@ -22,9 +26,7 @@ export default class ShopItem {
         ctx.rect(180 + 80 * this.idx, 400 + this.topOffset + 20, this.boxSize, this.boxSize)
         ctx.stroke();
 
-        const image = new Image();
-        image.src = this.guard.image;
-        ctx.drawImage(image, 190 + 80 * this.idx, 400 + this.topOffset + 30, 60, 60)
+        ctx.drawImage(this.guard.image, 190 + 80 * this.idx, 400 + this.topOffset + 30, 60, 60)
     }
 
     convert(){

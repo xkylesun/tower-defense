@@ -9,27 +9,34 @@ export default class Minion {
         this.topOffset = TOP_OFFSET;
 
         //below are customizable
-        this.health = spec.hp || 100;
-        this.maxHealth = this.health || 100;
-        this.attack = spec.atk || 40;
-        this.moveSpeed = spec.moveSpeed || 50;
-        this.moveLength = 4;
-        this.attackSpeed = spec.attackSpeed || 1000;
-        this.walking = spec.walking;
-        this.attacking = spec.attacking;
-        this.image = test;
+        // this.health = 100;
+        // this.maxHealth = 100;
+        // this.attack = 40;
+        // this.moveInterval = 50;
+        // this.moveLength = 4;
+        // this.attackInterval = 1000;
+        // this.walking = test;
+        // this.attacking = test;
 
-        this.size = 60;
+        this.height = 70;
+        this.width = 70;
+
         this.x = 0;
         this.y = (spec.row * this.topOffset + 20 * spec.row + 10) || 0;
 
         this.lastAttack = 0;
         this.lastMove = 0;
         this.target = null;
+
+        this.shift = 0;
+        this.lastShift = 0;
+
+        this.attackShiftInt = 150;
+        this.moveShiftInt = 100;
     }
 
     checkBlocked(guards){
-        let tar = guards[Math.floor(this.y / 80)][Math.floor((this.x + this.size)/ 80)];
+        let tar = guards[Math.floor(this.y / 80)][Math.floor((this.x + this.width - 10)/ 80)];
         if (tar){
             this.target = tar;
         } else {
@@ -38,8 +45,8 @@ export default class Minion {
     }
 
     strike(time){
-        if (this.target instanceof Guard){
-            if (time - this.lastAttack > this.attackSpeed) {
+        if (this.target){
+            if (time - this.lastAttack > this.attackInterval) {
                 this.target.health -= this.attack;
                 this.lastAttack = time;
             }
@@ -48,7 +55,7 @@ export default class Minion {
 
     move(time){
         if (!this.target){
-            if (time - this.lastMove > 50){
+            if (time - this.lastMove > this.moveInterval){
                 this.x += this.moveLength;
                 this.lastMove = time;
             }
@@ -65,31 +72,41 @@ export default class Minion {
         return this.health <= 0;
     }
 
-    // time pass in from game
-    update(ctx, time, guards){
-        this.checkBlocked(guards)
-        this.strike(time);
-
-        this.move(time);
-
-        this.draw(ctx);
-    }
-
-    draw(ctx) {
-        const image = new Image();
-        image.src = this.image;
-        ctx.drawImage(image, this.x, this.y + this.topOffset, this.size, this.size);
-        this.drawHealthBar(ctx);
-    }
+    // draw(ctx) {
+    //     const image = new Image();
+    //     image.src = this.image;
+    //     ctx.drawImage(image, this.x, this.y + this.topOffset, this.size, this.size);
+    //     this.drawHealthBar(ctx);
+    // }
 
     drawHealthBar(ctx) {
-        const barLength = this.size;
+        const barLength = this.width;
         const barHeight = 5;
-
         ctx.fillStyle = "gray"
-        ctx.fillRect(this.x, this.y + this.topOffset + this.size, barLength, barHeight);
+        ctx.fillRect(this.x, this.y + this.topOffset + this.height - 5, barLength, barHeight);
         ctx.fillStyle = "green";
-        ctx.fillRect(this.x, this.y + this.topOffset + this.size, barLength * (this.health / this.maxHealth), barHeight);
+        ctx.fillRect(this.x, this.y + this.topOffset + this.height - 5, barLength * (this.health / this.maxHealth), barHeight);
+    }
+
+    shiftFrame(imageWidth, frames) {
+        let time = new Date().getTime();
+        let interval = this.target ? this.attackShiftInt : this.moveShiftInt;
+        if (time - this.lastShift > interval) {
+            this.shift += imageWidth / frames;
+            this.lastShift = time;
+        }
+
+        if (this.shift >= imageWidth) {
+            this.shift = 0;
+        }
+    }
+
+    update(ctx, time, guards) {
+        this.checkBlocked(guards)
+        this.strike(time);
+        this.move(time);
+        this.draw(ctx);
+        this.drawHealthBar(ctx);
     }
 
 }
