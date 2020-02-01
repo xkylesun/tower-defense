@@ -1,8 +1,9 @@
 
-import Guard from "./guard";
-import Priest from "./priest";
-import Warrior from "./warrior";
-import Mage from "./mage";
+import Guard from "./guards/guard";
+import Priest from "./guards/priest";
+import Vanguard from "./guards/vanguard";
+import Mage from "./guards/mage";
+import Berzerk from "./guards/berzerk";
 
 import { cloneDeep } from "lodash";
 import { TOP_OFFSET } from "./game";
@@ -11,7 +12,7 @@ export default class ShopItem {
     constructor(spec){
         this.topOffset = TOP_OFFSET;
         this.boxSize = 80;
-        this.guard = spec.guard || new Guard({});
+        this.guard = spec.guard || new Guard();
         this.idx = spec.idx;
         this.x = 180 + spec.idx * 82;
         this.y = 400 + this.topOffset + 22;

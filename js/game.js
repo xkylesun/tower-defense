@@ -1,10 +1,13 @@
 
 export const TOP_OFFSET = 60;
 
-import Mushroom from "./mushroom";
-import Dragon from "./dragon";
+import Entry from "./entry";
 
-import Guard from "./guard";
+import Mushroom from "./enemies/mushroom";
+import Dragon from "./enemies/dragon";
+
+import Guard from "./guards/guard";
+import Priest from "./guards/priest";
 
 import Board from "./board";
 import ShopItem from "./shop_item";
@@ -15,7 +18,10 @@ import pauseButton from "../assets/pause-button.svg";
 import { toCanvasX, toCanvasY } from "./util";
 
 export default class Game {
-    constructor(){
+    constructor(entry){
+
+        this.entry = entry;
+
         this.board = new Board();
         this.topOffset = TOP_OFFSET;
         this.width = 800;
@@ -24,7 +30,7 @@ export default class Game {
         this.life = 3;
         this.kill = 0;
 
-        this.enemiesTotal = 100;
+        this.enemiesTotal = 10;
         this.enemiesRemaining = this.enemiesTotal;
 
         // this.guardsRemaining = 8;
@@ -49,22 +55,18 @@ export default class Game {
 
         let startTime = new Date().getTime();
         this.firstWaveStart = startTime;
-        this.firstWaveEnd = startTime + 20000;
-        this.secondWaveStart = startTime + 25000;
+        this.firstWaveEnd = startTime + 25000;
+        this.secondWaveStart = startTime + 30000;
         this.secondWaveEnd = startTime + 155000;
 
-        this.waveInterval = 10000;
+        this.waveInterval = 1000;
 
         this.guardSelected = null;
         this.mouseX = null;
         this.mouseY = null;
 
-        this.c = document.getElementById("canvas");
-        this.c.width = this.width;
-        this.c.height = this.height;
-        this.ctx = this.c.getContext("2d");
-        // this.ctx.imageSmoothingEnabled = false;
-        this.ctx.imageSmoothingQuality = "high";
+        this.c = this.entry.c;
+        this.ctx = this.entry.ctx;
 
         this.playIcon = new Image();
         this.playIcon.src = playButton;
@@ -72,6 +74,9 @@ export default class Game {
         this.pauseIcon.src = pauseButton;
 
         this.addListeners = this.addListeners.bind(this);
+        this.restartGame = this.restartGame.bind(this);
+
+
     }
 
     genCost(){
@@ -124,8 +129,8 @@ export default class Game {
         }
     }
 
-    drawStat(ctx){
-
+    drawStat(){
+        const ctx = this.ctx;
         //life
         ctx.fillStyle = "white";
         // ctx.fillRect(700, 550, 30, 15)
@@ -184,7 +189,12 @@ export default class Game {
     drawGuards(time){
         let guards = this.guards.flat().filter(el => (el instanceof Guard));
         for (const guard of guards) {
-            guard.update(this.ctx, time, this.enemies);
+            // special rule for healer
+            if (guard instanceof Priest){
+                guard.update(this.ctx, time, this.guards);
+            } else {
+                guard.update(this.ctx, time, this.enemies);
+            }
             if (guard.dead()) {
                 this.guards[Math.floor(guard.y / 80)][Math.floor(guard.x / 80)] = null;
             }
@@ -201,7 +211,8 @@ export default class Game {
         }
     }
 
-    drawGuardSelected(ctx){
+    drawGuardSelected(){
+        const ctx = this.ctx;
         if (this.guardSelected){
             ctx.save();
             ctx.globalAlpha = 0.5;
@@ -219,30 +230,35 @@ export default class Game {
     }
 
     update(){
+        let time = new Date().getTime();
         this.drawBoard()
 
         const ctx = this.ctx;
         ctx.clearRect(0, 0, this.width, this.height);
 
-        // hover effect when selected a guard
-        this.drawActiveCell(ctx);
-        this.drawGuardSelected(ctx);
+        this.drawEnemies(time);
+        this.drawGuards(time);
 
-        let time = new Date().getTime();
+        this.win();
+        this.lost();
+        
+        // hover effect of dragging guard
+        this.drawActiveCell();
+        this.drawGuardSelected();
+
+
         this.genCost(time);
-        this.drawStat(ctx);
+        this.drawStat();
 
         this.firstWave(time);
         this.secondWave(time);
 
-        this.drawEnemies(time);
-        this.drawGuards(time);
+        // this.drawEnemies(time);
+        // this.drawGuards(time);
 
-        this.drawShop(ctx);
+        this.drawShop();
         this.drawControl();
 
-        this.win();
-        this.lost();
     }
 
     animate(){
@@ -259,34 +275,37 @@ export default class Game {
     }
 
     win(){
-        if(this.enemies.length === 0 && this.enemiesRemaining === 0){
-            setTimeout(() => this.gameOver = true, 2000);
-            console.log("mission cleared")
+        if(this.enemies.length === 0 && this.enemiesRemaining === 0 && this.life > 0){
+            // setTimeout(() => this.gameOver = true, 2000);
+            this.gameOver = true;
+
+            this.drawGameOver("MISSION CLEARED");
         }
     }
 
     lost(){
         if (this.life <= 0){
-            setTimeout(() => this.gameOver = true, 2000);
-            console.log("you lost")
+            this.gameOver = true;
+
+            this.drawGameOver("YOU LOST");
         }
     }
 
     addListeners() {
-        window.addEventListener("mousemove", e => {
+        this.c.addEventListener("mousemove", e => {
             let x = toCanvasX(this.c, e);
             let y = toCanvasY(this.c, e);
             this.mouseX = x;
             this.mouseY = y;
         });
 
-        window.addEventListener("mousedown", e => {
+        this.c.addEventListener("mousedown", e => {
             let x = this.mouseX;
             let y = this.mouseY;
             this.selectShopItem(x, y);
         })
 
-        window.addEventListener("mouseup", e => {
+        this.c.addEventListener("mouseup", e => {
             if (this.guardSelected){
                 let x = this.mouseX;
                 let y = this.mouseY;
@@ -300,10 +319,11 @@ export default class Game {
             this.activeCell = null;
         })
 
-        window.addEventListener("click", e => {
+        this.c.addEventListener("click", e => {
             let x = this.mouseX;
             let y = this.mouseY;
-            this.pauseGame(x, y)
+            this.pauseGame(x, y);
+            this.restartGame(x, y);
         })
     }
 
@@ -327,7 +347,8 @@ export default class Game {
         return false;
     }
 
-    drawActiveCell(ctx){
+    drawActiveCell(){
+        const ctx = this.ctx;
         if (this.guardSelected){
             let x = Math.floor(this.mouseX / 80) * 80;
             let y = Math.floor((this.mouseY - this.topOffset) / 80) * 80 + this.topOffset;
@@ -348,7 +369,7 @@ export default class Game {
     }
 
     pauseGame(x, y) {
-        if (x > 740 && x < 780 && y > 10 && y < 50) {
+        if (x > 740 && x < 780 && y > 10 && y < 50 && !this.gameOver) {
             this.paused = !this.paused;
             if (this.paused) {
                 this.pauseInterval = setInterval(() => this.pausedTime += 100, 100)
@@ -374,5 +395,37 @@ export default class Game {
         this.animate();
         this.addListeners();
     }
+
+    drawGameOver(text){
+        const ctx = this.ctx;
+        ctx.save();
+        ctx.globalAlpha = 0.7;
+        ctx.fillStyle = '#333';
+        ctx.fillRect(0, this.topOffset, this.width, 400);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = '#fff'
+        ctx.font = '40px Impact';
+        ctx.fillText(text, this.width / 2 - ctx.measureText(text).width / 2, this.height / 2 - 20);
+        ctx.fillStyle = "gray";
+        ctx.fillRect(300, 350, 200, 50);
+        ctx.fillStyle = "white";
+        ctx.font = '28px Impact';
+        let btnText = 'PLAY AGAIN';
+        ctx.fillText(btnText, this.width / 2 - ctx.measureText(btnText).width / 2, this.height / 2 + 85);
+        ctx.restore();
+
+    }
+
+    restartGame(x, y){
+        if (this.gameOver && x > 300 && x < 500 && y > 350 && y < 400) {
+
+            // to remove event listenrs
+            const clone = this.c.cloneNode(true);
+            this.c = clone;
+
+            this.entry.restart();
+        }
+    }
+
 
 }

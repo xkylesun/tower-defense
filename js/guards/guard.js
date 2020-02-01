@@ -1,27 +1,27 @@
 
-import { TOP_OFFSET } from "./game";
-import test from "../assets/test.png";
+import { TOP_OFFSET } from "../game";
+import test from "../../assets/test.png";
 
+// SUPER CLASS FOR GUARD
 export default class Guard {
-    constructor(spec) {
+    constructor() {
         this.topOffset = TOP_OFFSET;
         this.height = 60;
         this.width = 60;
 
-        this.x = spec.x || 240;
-        this.y = spec.y || 0;
+        this.x = 240;
+        this.y = 0;
 
-        this.health = spec.hp || 1000;
+        this.health = 1000;
         this.maxHealth = this.health;
-        this.attack = spec.atk || 20;
+        this.attack = 20;
         this.attackInterval = 1000;
-        this.range = (spec.range || 3) * 80;
-        this.cost = spec.cost || 7;
-        this.standing = spec.standing;
-        this.attacking = spec.attacking;
+        this.range = 1 * 80;
+        this.cost = 7;
 
         this.enemiesInRange = [];
         this.lastAttacked = 0;
+        this.moving = false;
         
         this.image = new Image();
         this.image.src = test;
@@ -38,10 +38,11 @@ export default class Guard {
         let temp = []
         let rangeX = Math.max(this.x - this.range, 0);
         for(const enemy of enemies){
-            if (enemy.x > rangeX && enemy.y > this.y && enemy.y < this.y + this.height && !this.enemiesInRange.includes(enemy)){
+            if (enemy.x > rangeX && enemy.x < this.x - this.width && enemy.y > this.y && enemy.y < this.y + this.height && !this.enemiesInRange.includes(enemy)){
                 temp.push(enemy)
             }
         }
+        // sort by distance asc
         this.enemiesInRange = temp.sort((a, b) => b.x - a.x);
     }
 

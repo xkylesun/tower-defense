@@ -1,6 +1,6 @@
 import Guard from "./guard";
 
-export default class Warrior extends Guard {
+export default class Vanguard extends Guard {
     constructor(props) {
         super(props);
         this.health = 1200;
