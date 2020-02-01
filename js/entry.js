@@ -33,11 +33,11 @@ export default class Entry {
         ctx.clearRect(0, 0, this.width, this.height);
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, this.width, this.height);
-        ctx.fillStyle = "brown";
-        ctx.font = '40px Impact';
+        ctx.fillStyle = "#E54059"; // red
+        ctx.font = '40px Open sans';
         let title = 'G U A R D I A N S'
         ctx.fillText(title, this.width / 2 - ctx.measureText(title).width / 2, this.height / 2 - 20);
-        ctx.fillStyle = "gray";
+        // ctx.fillStyle = "#8B8B8B";
         ctx.fillRect(300, 350, 200, 50);
         ctx.fillStyle = "white";
         ctx.font = '28px Impact';

@@ -76,7 +76,6 @@ export default class Game {
         this.addListeners = this.addListeners.bind(this);
         this.restartGame = this.restartGame.bind(this);
 
-
     }
 
     genCost(){
@@ -134,25 +133,25 @@ export default class Game {
         //life
         ctx.fillStyle = "white";
         // ctx.fillRect(700, 550, 30, 15)
-		ctx.font = 'bold 16px Arial';
-        ctx.fillText('Life: ' + Math.max(this.life, 0), 300, 35);
+        ctx.font = 'bold 18px Open sans';
+        ctx.fillText('LIFE: ' + Math.max(this.life, 0), 300, 35);
 
         // remaining
         ctx.fillStyle = "white";
         // ctx.fillRect(700, 550, 30, 15)
-        ctx.font = 'bold 16px Arial';
-        ctx.fillText('Enemies: ' + (this.enemiesRemaining + this.enemies.length) + "/" + this.enemiesTotal, 400, 35);
+        ctx.font = 'bold 18px Open sans';
+        ctx.fillText('ENEMIES: ' + (this.enemiesRemaining + this.enemies.length) + "/" + this.enemiesTotal, 400, 35);
 
         // cost
         ctx.fillStyle = "white";
         // ctx.fillRect(700, 550, 30, 15)
-        ctx.font = 'bold 16px Arial';
-        ctx.fillText('Cost: ' + this.cost, 700, 560);
+        ctx.font = 'bold 18px Open sans';
+        ctx.fillText('COST: ' + this.cost, 700, 560);
     }
 
     drawControl(){
         const ctx = this.ctx;
-        ctx.fillStyle = "gray";
+        ctx.fillStyle = "#8B8B8B"; // lite gray
         ctx.fillRect(740, 10, 40, 40);
         let control = this.paused ? this.playIcon : this.pauseIcon;
         ctx.drawImage(control, 745, 15, 30, 30);
@@ -162,11 +161,11 @@ export default class Game {
         const ctx = this.ctx;
         ctx.save();
         ctx.globalAlpha = 0.7;
-        ctx.fillStyle = '#333';
+        ctx.fillStyle = '#5C5C5C';  
         ctx.fillRect(0, this.topOffset, this.width, 400);
         ctx.globalAlpha = 1;
-        ctx.fillStyle = '#fff'
-        ctx.font = '40px Impact';
+        ctx.fillStyle = 'white';
+        ctx.font = '42px Open sans';
         let text = 'P A U S E D'
         ctx.fillText(text, this.width / 2 - ctx.measureText(text).width / 2, this.height / 2 - 20);
         ctx.restore();
@@ -203,7 +202,7 @@ export default class Game {
 
     drawShop(){
         const ctx = this.ctx;
-        ctx.fillStyle = "gray";
+        ctx.fillStyle = "#8B8B8B";
         ctx.fillRect(180, 400 + this.topOffset + 18, 3 * 80, 84);
 
         for (const item of this.shop){
@@ -279,7 +278,7 @@ export default class Game {
             // setTimeout(() => this.gameOver = true, 2000);
             this.gameOver = true;
 
-            this.drawGameOver("MISSION CLEARED");
+            this.drawGameOver("M I S S I O N  C L E A R E D");
         }
     }
 
@@ -287,7 +286,7 @@ export default class Game {
         if (this.life <= 0){
             this.gameOver = true;
 
-            this.drawGameOver("YOU LOST");
+            this.drawGameOver("Y O U  L O S T");
         }
     }
 
@@ -400,13 +399,13 @@ export default class Game {
         const ctx = this.ctx;
         ctx.save();
         ctx.globalAlpha = 0.7;
-        ctx.fillStyle = '#333';
+        ctx.fillStyle = '#5C5C5C';
         ctx.fillRect(0, this.topOffset, this.width, 400);
         ctx.globalAlpha = 1;
-        ctx.fillStyle = '#fff'
-        ctx.font = '40px Impact';
+        ctx.fillStyle = 'white';
+        ctx.font = '42px Open sans';
         ctx.fillText(text, this.width / 2 - ctx.measureText(text).width / 2, this.height / 2 - 20);
-        ctx.fillStyle = "gray";
+        ctx.fillStyle = "#E54059"; //darker gray
         ctx.fillRect(300, 350, 200, 50);
         ctx.fillStyle = "white";
         ctx.font = '28px Impact';

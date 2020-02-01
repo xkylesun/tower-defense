@@ -64,10 +64,22 @@ export default class Guard {
         const barLength = this.width;
         const barHeight = 5;
 
-        ctx.fillStyle = "gray"
+        ctx.fillStyle = "#8B8B8B"
         ctx.fillRect(this.x + 10, this.y + this.topOffset + this.height + 15, barLength, barHeight);
-        ctx.fillStyle = "green";
+        
+        ctx.fillStyle = this.hpColor();
         ctx.fillRect(this.x + 10, this.y + this.topOffset + this.height + 15, barLength * (this.health / this.maxHealth), barHeight);
+    }
+
+    hpColor() {
+        let frac = this.health / this.maxHealth;
+        if (frac > 0.5) {
+            return "green";
+        } else if (frac > 0.2) {
+            return "#FDB36A"; // orange
+        } else {
+            return "#D13B51"; //red
+        }
     }
 
     update(ctx, time, enemies) {
