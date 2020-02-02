@@ -4,6 +4,8 @@ import Guard from "./guard";
 export default class Mage extends Guard {
     constructor(props) {
         super(props);
+        this.klass = "Mage";
+
         this.health = 600;
         this.maxHealth = this.health;
         this.attack = 80;

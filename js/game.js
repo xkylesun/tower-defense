@@ -1,8 +1,7 @@
 
 export const TOP_OFFSET = 60;
 
-import Entry from "./entry";
-
+// import Entry from "./entry";
 import Mushroom from "./enemies/mushroom";
 import Dragon from "./enemies/dragon";
 
@@ -40,13 +39,6 @@ export default class Game {
 
         this.enemies = [];
         this.guards = new Array(6).fill(0).map(() => new Array(10).fill(null));
-
-        //test
-        // const test1 = new ShopItem({idx: 0});
-        // const test2 = new ShopItem({idx: 1});
-        // const test3 = new ShopItem({idx: 2});
-        // const test4 = new ShopItem({idx: 3});
-        // this.shop = [test1, test2, test3, test4];
 
         const shop = [Vanguard, Mage, Berzerk, Priest];
         this.shop = shop.map((k, idx) => new ShopItem(k, idx));

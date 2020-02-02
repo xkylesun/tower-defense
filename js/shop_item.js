@@ -1,10 +1,5 @@
 
 import Guard from "./guards/guard";
-import Priest from "./guards/priest";
-import Vanguard from "./guards/vanguard";
-import Mage from "./guards/mage";
-import Berzerk from "./guards/berzerk";
-
 import { cloneDeep } from "lodash";
 import { TOP_OFFSET } from "./game";
 
@@ -33,9 +28,12 @@ export default class ShopItem {
         ctx.fillStyle = "black";
         ctx.fillRect(this.leftOffset + 60 + 80 * this.idx, 400 + this.topOffset + 22, 18, 20)
         ctx.fillStyle = "white";
+        
         ctx.font = 'bold 16px Open sans';
-        let text = this.guard.cost;
-        ctx.fillText(text, this.leftOffset + 69 - ctx.measureText(text).width / 2 + 80 * this.idx, 400 + this.topOffset + 38)
+        let cost = this.guard.cost;
+        ctx.fillText(cost, this.leftOffset + 69 - ctx.measureText(cost).width / 2 + 80 * this.idx, 400 + this.topOffset + 38);
+        let klass = this.guard.klass;
+        ctx.fillText(klass, this.leftOffset + 40 - ctx.measureText(klass).width / 2 + 80 * this.idx, 400 + this.topOffset + 30 + 90)
 
         ctx.drawImage(this.guard.image, this.leftOffset + 10 + 80 * this.idx, 400 + this.topOffset + 30, 60, 60)
     }

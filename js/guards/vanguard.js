@@ -3,6 +3,8 @@ import Guard from "./guard";
 export default class Vanguard extends Guard {
     constructor(props) {
         super(props);
+        this.klass = "Vanguard";
+
         this.health = 1000;
         this.maxHealth = this.health;
 
