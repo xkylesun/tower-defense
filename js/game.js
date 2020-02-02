@@ -8,6 +8,9 @@ import Dragon from "./enemies/dragon";
 
 import Guard from "./guards/guard";
 import Priest from "./guards/priest";
+import Vanguard from "./guards/vanguard";
+import Mage from "./guards/mage";
+import Berzerk from "./guards/berzerk";
 
 import Board from "./board";
 import ShopItem from "./shop_item";
@@ -26,11 +29,11 @@ export default class Game {
         this.topOffset = TOP_OFFSET;
         this.width = 800;
         this.height = 600;
-        this.cost = 9;
+        this.cost = 90;
         this.life = 3;
         this.kill = 0;
 
-        this.enemiesTotal = 10;
+        this.enemiesTotal = 30;
         this.enemiesRemaining = this.enemiesTotal;
 
         // this.guardsRemaining = 8;
@@ -39,10 +42,14 @@ export default class Game {
         this.guards = new Array(6).fill(0).map(() => new Array(10).fill(null));
 
         //test
-        const test1 = new ShopItem({idx: 0});
-        const test2 = new ShopItem({idx: 1});
-        const test3 = new ShopItem({idx: 2});
-        this.shop = [test1, test2, test3];
+        // const test1 = new ShopItem({idx: 0});
+        // const test2 = new ShopItem({idx: 1});
+        // const test3 = new ShopItem({idx: 2});
+        // const test4 = new ShopItem({idx: 3});
+        // this.shop = [test1, test2, test3, test4];
+
+        const shop = [Vanguard, Mage, Berzerk, Priest];
+        this.shop = shop.map((k, idx) => new ShopItem(k, idx));
 
         this.lastCostTime = 0;
         this.lastWaveTime= 0;
@@ -51,15 +58,16 @@ export default class Game {
         this.pausedTime = 0;
         this.pauseInterval = null;
 
-        this.gameOver =false;
+        this.gameOver = false;
 
         let startTime = new Date().getTime();
-        this.firstWaveStart = startTime;
-        this.firstWaveEnd = startTime + 25000;
-        this.secondWaveStart = startTime + 30000;
-        this.secondWaveEnd = startTime + 155000;
+        this.firstWaveStart = startTime + 2000;
+        this.firstWaveEnd = startTime + 38000;
+        this.secondWaveStart = startTime + 45000;
+        // this.secondWaveEnd = startTime + 155000;
 
         this.waveInterval = 1000;
+        this.lastSpawnRow = null;
 
         this.guardSelected = null;
         this.mouseX = null;
@@ -67,6 +75,7 @@ export default class Game {
 
         this.c = this.entry.c;
         this.ctx = this.entry.ctx;
+
 
         this.playIcon = new Image();
         this.playIcon.src = playButton;
@@ -94,14 +103,22 @@ export default class Game {
         }
     }
 
+    randomRow(){
+        return [1,2,3][Math.floor(Math.random() * 3)];
+    }
+
     firstWave(time){
         if (time > this.firstWaveStart && time < this.firstWaveEnd) {
-            this.board.background[2][0] = "red";
             if (time - this.lastWaveTime > this.waveInterval) {
+                let row = this.randomRow();
+                this.lastSpawnRow = row;
                 setTimeout(() => {
-                    this.genEnemy(Mushroom, 2);
-                }, 2000)
+                    this.genEnemy(Mushroom, row);
+                }, 3000);
                 this.lastWaveTime = time;
+            }
+            if (this.lastSpawnRow){
+                this.board.drawRuby(this.lastSpawnRow);
             }
         }
     }
@@ -112,18 +129,17 @@ export default class Game {
     }
 
     secondWave(time){
-        if (time > this.secondWaveStart && time < this.secondWaveEnd ){
-            for (let i = 1; i < 4; i++) {
-                this.board.background[i][0] = "red";
-            }
+        if (time > this.secondWaveStart){
             if (time - this.lastWaveTime > this.waveInterval){
                 setTimeout(() => {
                     this.genEnemy(this.randomEnemy(), 1);
                     setTimeout(() => this.genEnemy(this.randomEnemy(), 2), 3000);
                     this.genEnemy(this.randomEnemy(), 3);
-                }, 2000)
+                }, 3000)
                 this.lastWaveTime = time;
-
+            }
+            for (let i = 1; i < 4; i++){
+                this.board.drawRuby(i);
             }
         }
     }
@@ -134,7 +150,7 @@ export default class Game {
         ctx.fillStyle = "white";
         // ctx.fillRect(700, 550, 30, 15)
         ctx.font = 'bold 18px Open sans';
-        ctx.fillText('LIFE: ' + Math.max(this.life, 0), 300, 35);
+        ctx.fillText('LIFE: ' + Math.max(this.life, 0), 250, 35);
 
         // remaining
         ctx.fillStyle = "white";
@@ -160,7 +176,7 @@ export default class Game {
     drawPaused(){
         const ctx = this.ctx;
         ctx.save();
-        ctx.globalAlpha = 0.7;
+        ctx.globalAlpha = 0.8;
         ctx.fillStyle = '#5C5C5C';  
         ctx.fillRect(0, this.topOffset, this.width, 400);
         ctx.globalAlpha = 1;
@@ -190,7 +206,7 @@ export default class Game {
         for (const guard of guards) {
             // special rule for healer
             if (guard instanceof Priest){
-                guard.update(this.ctx, time, this.guards);
+                guard.update(this.ctx, time, guards);
             } else {
                 guard.update(this.ctx, time, this.enemies);
             }
@@ -202,9 +218,6 @@ export default class Game {
 
     drawShop(){
         const ctx = this.ctx;
-        ctx.fillStyle = "#8B8B8B";
-        ctx.fillRect(180, 400 + this.topOffset + 18, 3 * 80, 84);
-
         for (const item of this.shop){
             item.draw(ctx);
         }
@@ -214,18 +227,14 @@ export default class Game {
         const ctx = this.ctx;
         if (this.guardSelected){
             ctx.save();
-            ctx.globalAlpha = 0.5;
+            ctx.globalAlpha = 0.6;
             ctx.drawImage(this.guardSelected.image, this.mouseX - 30, this.mouseY - 30, 60, 60);
             ctx.restore();
         }
     }
 
     drawBoard(){
-        const bg = document.getElementById("background");
-        bg.width = this.width;
-        bg.height = this.height;
-        const bgx = bg.getContext("2d");
-        this.board.draw(bgx);
+        this.board.draw();
     }
 
     update(){
@@ -338,7 +347,7 @@ export default class Game {
     }
 
     validCell(x, y){
-        if (x > 80 && x < this.width - 80 && y > 60 && y < 460){
+        if (x > 80 && x < this.width - 80 && y > this.topOffset + 80 && y < this.topOffset + 4 * 80){
             if (this.guards[Math.floor((y - this.topOffset) / 80)][Math.floor(x / 80)] === null){
                 return true;
             }
@@ -352,8 +361,18 @@ export default class Game {
             let x = Math.floor(this.mouseX / 80) * 80;
             let y = Math.floor((this.mouseY - this.topOffset) / 80) * 80 + this.topOffset;
             if (this.validCell(this.mouseX, this.mouseY)){
-                ctx.fillStyle = "rgba(0,0,0,0.2)";
-                ctx.fillRect(x, y, 79, 79);
+
+                // draw range in blue
+                ctx.fillStyle = "rgb(87, 166, 186, 0.5)";
+                let rangeX = this.guardSelected.rangeX;
+                let rangeY = this.guardSelected.rangeY;
+                ctx.fillRect(x + 1 - rangeX, y + 1 - rangeY, rangeX + 79, 79 + rangeY * 2);
+                // ctx.fillRect(x + 1, y + 1 - this.guardSelected.rangeY, 79, this.guardSelected.rangeY * 3);
+                
+                // draw active cell in green
+                ctx.fillStyle = "rgb(118,171, 118, 0.5)";
+                ctx.fillRect(x + 1, y + 1, 79, 79);
+
             }
         }
     }
@@ -384,7 +403,7 @@ export default class Game {
         this.firstWaveStart += this.pausedTime;
         this.firstWaveEnd += this.pausedTime;
         this.secondWaveStart += this.pausedTime;
-        this.secondWaveEnd += this.pausedTime;
+        // this.secondWaveEnd += this.pausedTime;
         this.lastCostTime += this.pausedTime;
         this.lastWaveTime += this.pausedTime;
         this.pausedTime = 0;
@@ -398,7 +417,7 @@ export default class Game {
     drawGameOver(text){
         const ctx = this.ctx;
         ctx.save();
-        ctx.globalAlpha = 0.7;
+        ctx.globalAlpha = 0.8;
         ctx.fillStyle = '#5C5C5C';
         ctx.fillRect(0, this.topOffset, this.width, 400);
         ctx.globalAlpha = 1;
@@ -409,7 +428,7 @@ export default class Game {
         ctx.fillRect(300, 350, 200, 50);
         ctx.fillStyle = "white";
         ctx.font = '28px Impact';
-        let btnText = 'PLAY AGAIN';
+        let btnText = 'BACK TO MAIN';
         ctx.fillText(btnText, this.width / 2 - ctx.measureText(btnText).width / 2, this.height / 2 + 85);
         ctx.restore();
 
@@ -417,12 +436,12 @@ export default class Game {
 
     restartGame(x, y){
         if (this.gameOver && x > 300 && x < 500 && y > 350 && y < 400) {
-
             // to remove event listenrs
             const clone = this.c.cloneNode(true);
             this.c = clone;
+            this.gameOver = false;
 
-            this.entry.restart();
+            this.entry.start();
         }
     }
 

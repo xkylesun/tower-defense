@@ -3,13 +3,14 @@ import Guard from "./guard";
 export default class Vanguard extends Guard {
     constructor(props) {
         super(props);
-        this.health = 1200;
+        this.health = 1000;
         this.maxHealth = this.health;
 
-        this.attack = 40;
-        this.attackInterval = 1000;
+        this.attack = 30;
+        this.attackInterval = 2000;
 
-        this.range = 1 * 80;
+        this.rangeX = 1 * 80;
+        this.rangeY = 0;
         this.cost = 7;
 
         this.standing = null;

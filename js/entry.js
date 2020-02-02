@@ -12,7 +12,7 @@ export default class Entry {
         this.ctx.imageSmoothingQuality = "high";
 
         this.start = this.start.bind(this);
-        this.restart = this.restart.bind(this);
+        // this.restart = this.restart.bind(this);
 
         this.cb = e => {
             let x = toCanvasX(this.c, e);
@@ -51,12 +51,10 @@ export default class Entry {
         this.draw();
         this.c.addEventListener("click", this.cb);
     }
-
-    restart(){
-        this.game = new Game(this);
-        this.game.play();
-    }
-
+    // restart(){
+    //     this.game = new Game(this);
+    //     this.game.play();
+    // }
 }
 
 window.addEventListener('DOMContentLoaded', () => {

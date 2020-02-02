@@ -10,7 +10,7 @@ export default class Mushroom extends Minion{
         this.maxHealth = this.health;
         this.attack = 20;
         this.moveInterval = 100;
-        this.moveLength = 100;
+        this.moveLength = 2;
         this.attackInterval = 1000;
 
         this.attackShiftInt = 150;

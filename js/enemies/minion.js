@@ -123,7 +123,13 @@ export default class Minion {
         this.checkBlocked(guards)
         this.strike(time);
         this.move(time);
+        ctx.save();
+        ctx.shadowColor = "black";
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetX = 10;
+        ctx.shadowOffsetY = 20;
         this.draw(ctx);
+        ctx.restore();
         this.drawHealthBar(ctx);
     }
 

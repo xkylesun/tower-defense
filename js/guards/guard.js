@@ -9,15 +9,13 @@ export default class Guard {
         this.height = 60;
         this.width = 60;
 
-        this.x = 240;
-        this.y = 0;
-
-        this.health = 1000;
-        this.maxHealth = this.health;
-        this.attack = 20;
-        this.attackInterval = 1000;
-        this.range = 1 * 80;
-        this.cost = 7;
+        // this.health = 1000;
+        // this.maxHealth = this.health;
+        // this.attack = 20;
+        // this.attackInterval = 1000;
+        // this.rangeX = 1 * 80;
+        // this.rangeY = 0;
+        // this.cost = 7;
 
         this.enemiesInRange = [];
         this.lastAttacked = 0;
@@ -36,9 +34,9 @@ export default class Guard {
 
     CheckInRange(enemies){
         let temp = []
-        let rangeX = Math.max(this.x - this.range, 0);
+        let rangeX = Math.max(this.x - this.rangeX, 0);
         for(const enemy of enemies){
-            if (enemy.x > rangeX && enemy.x < this.x - this.width && enemy.y > this.y && enemy.y < this.y + this.height && !this.enemiesInRange.includes(enemy)){
+            if (enemy.x > rangeX && enemy.x < this.x + 80 && enemy.y > this.y && enemy.y < this.y + this.height && !this.enemiesInRange.includes(enemy)){
                 temp.push(enemy)
             }
         }
@@ -57,7 +55,6 @@ export default class Guard {
 
     draw(ctx) {
         ctx.drawImage(this.image, this.x + 10, this.y + this.topOffset + 10, this.width, this.height);
-        this.drawHealthBar(ctx);
     }
 
     drawHealthBar(ctx){
@@ -85,7 +82,14 @@ export default class Guard {
     update(ctx, time, enemies) {
         this.CheckInRange(enemies);
         this.strike(time);
+        ctx.save();
+        ctx.shadowColor = "black";
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetX = 10;
+        ctx.shadowOffsetY = 20;
         this.draw(ctx);
+        ctx.restore();
+        this.drawHealthBar(ctx);
     }
 
     dead(){

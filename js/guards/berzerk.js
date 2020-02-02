@@ -9,8 +9,10 @@ export default class Berzerk extends Guard {
         this.attack = 60;
         this.attackInterval = 1000;
 
-        this.range = 1 * 80;
-        this.cost = 7;
+        this.rangeX = 1 * 80;
+        this.rangeY = 0;
+        
+        this.cost = 14;
 
         this.standing = null;
         this.attacking = null;
