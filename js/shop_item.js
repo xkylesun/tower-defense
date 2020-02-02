@@ -25,17 +25,19 @@ export default class ShopItem {
         ctx.strokeStyle = "white";
         ctx.rect(this.leftOffset + 80 * this.idx, 400 + this.topOffset + 20, this.boxSize, this.boxSize)
         ctx.stroke();
+        
+        ctx.drawImage(this.guard.icon, this.leftOffset + 82 * this.idx, 400 + this.topOffset + 25, 72, 72)
+        
         ctx.fillStyle = "black";
         ctx.fillRect(this.leftOffset + 60 + 80 * this.idx, 400 + this.topOffset + 22, 18, 20)
-        ctx.fillStyle = "white";
         
+        ctx.fillStyle = "white";
         ctx.font = 'bold 16px Open sans';
         let cost = this.guard.cost;
         ctx.fillText(cost, this.leftOffset + 69 - ctx.measureText(cost).width / 2 + 80 * this.idx, 400 + this.topOffset + 38);
         let klass = this.guard.klass;
         ctx.fillText(klass, this.leftOffset + 40 - ctx.measureText(klass).width / 2 + 80 * this.idx, 400 + this.topOffset + 30 + 90)
-
-        ctx.drawImage(this.guard.image, this.leftOffset + 10 + 80 * this.idx, 400 + this.topOffset + 30, 60, 60)
+        
     }
 
     convert(){

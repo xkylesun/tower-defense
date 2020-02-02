@@ -8,7 +8,7 @@ import Dragon from "./enemies/dragon";
 import Guard from "./guards/guard";
 import Priest from "./guards/priest";
 import Vanguard from "./guards/vanguard";
-import Mage from "./guards/mage";
+import Archer from "./guards/archer";
 import Berzerk from "./guards/berzerk";
 
 import Board from "./board";
@@ -40,7 +40,7 @@ export default class Game {
         this.enemies = [];
         this.guards = new Array(6).fill(0).map(() => new Array(10).fill(null));
 
-        const shop = [Vanguard, Mage, Berzerk, Priest];
+        const shop = [Vanguard, Archer, Berzerk, Priest];
         this.shop = shop.map((k, idx) => new ShopItem(k, idx));
 
         this.lastCostTime = 0;
@@ -58,7 +58,8 @@ export default class Game {
         this.secondWaveStart = startTime + 45000;
         // this.secondWaveEnd = startTime + 155000;
 
-        this.waveInterval = 1000;
+        this.waveInterval = 10000;
+        // this.waveInterval = 3000;
         this.lastSpawnRow = null;
 
         this.guardSelected = null;
@@ -220,7 +221,7 @@ export default class Game {
         if (this.guardSelected){
             ctx.save();
             ctx.globalAlpha = 0.6;
-            ctx.drawImage(this.guardSelected.image, this.mouseX - 30, this.mouseY - 30, 60, 60);
+            ctx.drawImage(this.guardSelected.icon, this.mouseX - 35, this.mouseY - 40, 72, 72);
             ctx.restore();
         }
     }

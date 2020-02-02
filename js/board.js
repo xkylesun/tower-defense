@@ -52,9 +52,9 @@ export default class Board {
         }
         bgx.save();
         bgx.shadowColor = "black";
-        bgx.shadowBlur = 10;
-        bgx.shadowOffsetX = 10;
-        bgx.shadowOffsetY = 20;
+        bgx.shadowBlur = 15;
+        bgx.shadowOffsetX = -20;
+        bgx.shadowOffsetY = 15;
         for (let i = 0; i < 3; i++) {
             // bgx.drawImage(this.ruby, 0 + 10, 80 * (1 + i) + this.topOffset + 10, 60, 60);
             bgx.drawImage(this.crystal, 80 * 9 + 10, 80 * (1 + i) + this.topOffset + 10, 60, 60);
@@ -66,9 +66,9 @@ export default class Board {
         const bgx = this.bgx;
         bgx.save();
         bgx.shadowColor = "black";
-        bgx.shadowBlur = 10;
-        bgx.shadowOffsetX = 10;
-        bgx.shadowOffsetY = 20;
+        bgx.shadowBlur = 15;
+        bgx.shadowOffsetX = -20;
+        bgx.shadowOffsetY = 15;
         bgx.drawImage(this.ruby, 0 + 10, 80 * i + this.topOffset + 10, 60, 60);
         bgx.restore();
 

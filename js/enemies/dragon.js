@@ -27,11 +27,11 @@ export default class Dragon extends Minion {
     draw(ctx) {
         if (!this.target){
             ctx.drawImage(this.imgMoving, 0 + this.shift, 0, 72, 78, this.x - 5, this.y - 10 + this.topOffset, this.width, this.height);
+            this.shiftFrame(721, 10);
         } else {
             ctx.drawImage(this.imgAttacking, 0 + this.shift, 0, 115, 91, this.x - 5, this.y - 10 + this.topOffset, 115, this.height);
+            this.shiftFrame(805, 7);
         }
-
-        this.target ? this.shiftFrame(805, 7) : this.shiftFrame(721, 10);
     }
 
 

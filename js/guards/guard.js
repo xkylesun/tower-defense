@@ -19,16 +19,14 @@ export default class Guard {
 
         this.enemiesInRange = [];
         this.lastAttacked = 0;
-        this.moving = false;
+        
+        this.standing = true;
         
         this.image = new Image();
         this.image.src = test;
 
-        this.moving = new Image();
-        this.moving.src = test;
-
-        this.attacking = new Image();
-        this.attacking.src = test;
+        this.shift = 0;
+        this.lastShift = 0;
 
     }
 
@@ -36,10 +34,11 @@ export default class Guard {
         let temp = []
         let rangeX = Math.max(this.x - this.rangeX, 0);
         for(const enemy of enemies){
-            if (enemy.x > rangeX && enemy.x < this.x + 80 && enemy.y > this.y && enemy.y < this.y + this.height && !this.enemiesInRange.includes(enemy)){
+            if (enemy.x > rangeX && enemy.x < this.x + 80 && enemy.y > this.y && enemy.y < this.y + this.height){
                 temp.push(enemy)
             }
         }
+        // debugger
         // sort by distance asc
         this.enemiesInRange = temp.sort((a, b) => b.x - a.x);
     }
@@ -83,9 +82,9 @@ export default class Guard {
         this.CheckInRange(enemies);
         this.strike(time);
         ctx.save();
-        ctx.shadowColor = "black";
-        ctx.shadowBlur = 10;
-        ctx.shadowOffsetX = 10;
+        ctx.shadowColor = "#171717";
+        ctx.shadowBlur = 15;
+        ctx.shadowOffsetX = -20;
         ctx.shadowOffsetY = 20;
         this.draw(ctx);
         ctx.restore();
@@ -94,6 +93,31 @@ export default class Guard {
 
     dead(){
         return this.health <= 0;
+    }
+
+    shiftFrame(imageWidth, frames) {
+        // reset shift when status changed
+        if (this.enemiesInRange.length > 0  && this.standing) {
+            this.standing = false;
+            this.shift = 0;
+            // debugger
+        } else if (!this.standing && this.enemiesInRange.length < 1) {
+            this.standing = true;
+            this.shift = 0;
+            // debugger
+        }
+
+        let time = new Date().getTime();
+        let interval = this.standing ? this.standShiftInt : this.attackShiftInt;
+        if (time - this.lastShift > interval) {
+            this.shift += imageWidth / frames;
+            this.lastShift = time;
+            // debugger
+        }
+
+        if (this.shift >= imageWidth) {
+            this.shift = 0;
+        }
     }
 
 }

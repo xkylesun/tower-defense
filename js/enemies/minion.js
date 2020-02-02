@@ -28,7 +28,7 @@ export default class Minion {
         this.lastAttack = 0;
         this.lastMove = 0;
         this.target = null;
-        this.action = true;
+        this.moving = true;
 
         this.shift = 0;
         this.lastShift = 0;
@@ -124,9 +124,9 @@ export default class Minion {
         this.strike(time);
         this.move(time);
         ctx.save();
-        ctx.shadowColor = "black";
-        ctx.shadowBlur = 10;
-        ctx.shadowOffsetX = 10;
+        ctx.shadowColor = "#171717";
+        ctx.shadowBlur = 15;
+        ctx.shadowOffsetX = -20;
         ctx.shadowOffsetY = 20;
         this.draw(ctx);
         ctx.restore();
