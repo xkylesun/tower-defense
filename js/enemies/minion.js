@@ -7,18 +7,6 @@ export default class Minion {
     constructor(spec){
         this.topOffset = TOP_OFFSET;
 
-        //below are customizable
-        // this.health = 100;
-        // this.maxHealth = 100;
-        // this.attack = 40;
-        // this.moveInterval = 50;
-        // this.moveLength = 4;
-        // this.attackInterval = 1000;
-        // this.imgMoving = test;
-        // this.imgAttacking = test;
-        // this.attackShiftInt = 150;
-        // this.moveShiftInt = 100;
-
         this.height = 70;
         this.width = 70;
 

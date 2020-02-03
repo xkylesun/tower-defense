@@ -1,6 +1,4 @@
-
 import { TOP_OFFSET } from "../game";
-import test from "../../assets/test.png";
 
 // SUPER CLASS FOR GUARD
 export default class Guard {
@@ -19,11 +17,8 @@ export default class Guard {
 
         this.enemiesInRange = [];
         this.lastAttacked = 0;
-        
+
         this.standing = true;
-        
-        this.image = new Image();
-        this.image.src = test;
 
         this.shift = 0;
         this.lastShift = 0;

@@ -18,7 +18,7 @@ export default class ShopItem {
 
     draw(ctx){
         // shop inner border: 180 + ( 80 * 2 ) * idx
-        ctx.fillStyle = "#8B8B8B";
+        ctx.fillStyle = "#4C5C68";
         ctx.fillRect(this.leftOffset + 80 * this.idx, 400 + this.topOffset + 18, 80, 84);
         ctx.beginPath();
         ctx.lineWidth = "2";

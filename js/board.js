@@ -1,8 +1,8 @@
 import { TOP_OFFSET } from "./game";
 import ruby from "../assets/ruby.svg";
 import bgTile from "../assets/bg-tile.png";
-import lavaTile from "../assets/Lava #4.png";
-import crystal from "../assets/Water Gem.svg";
+import lavaTile from "../assets/lava.png";
+import crystal from "../assets/crystal-blue.svg";
 
 
 export default class Board {
