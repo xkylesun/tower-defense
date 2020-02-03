@@ -4,8 +4,8 @@
   "description": "",
   "main": "webpack-config.js",
   "scripts": {
-    "start": "webpack -w --mode=development",
-      "postinstall": "webpack"
+    "start": "node index.js",
+    "postinstall": "webpack"
   },
   "repository": {
     "type": "git",
