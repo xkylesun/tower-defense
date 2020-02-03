@@ -32,31 +32,24 @@ export default class Board {
 
     draw(){
         const bgx = this.bgx;
-        bgx.clearRect(0, 0, this.width, this.height)
+        bgx.clearRect(0, 0, this.width, this.height);
+
         bgx.fillStyle = "black";
         bgx.fillRect(0, 0, this.width, this.height);
-        // bgx.globalAlpha = 0.6;
         bgx.drawImage(this.bgTile, 0, this.topOffset, this.width, 160);
         bgx.drawImage(this.bgTile, 0, this.topOffset + 160, this.width, 160);
-        // bgx.globalAlpha = 1;
-        // bgx.drawImage(this.lavaTile, 0, this.topOffset, 800, 80)
-
-        for (let i = 1; i < 4; i++) {
-
-        }
 
         for (let i = 0; i < 10; i++) {
-
             bgx.drawImage(this.lavaTile, 80 * i, 1 + this.topOffset, 79, 79);
             bgx.drawImage(this.lavaTile, 80 * i, 1 + 80 * 4 + this.topOffset, 79, 79);
         }
+        
         bgx.save();
         bgx.shadowColor = "black";
         bgx.shadowBlur = 15;
         bgx.shadowOffsetX = -20;
         bgx.shadowOffsetY = 15;
         for (let i = 0; i < 3; i++) {
-            // bgx.drawImage(this.ruby, 0 + 10, 80 * (1 + i) + this.topOffset + 10, 60, 60);
             bgx.drawImage(this.crystal, 80 * 9 + 10, 80 * (1 + i) + this.topOffset + 10, 60, 60);
         }
         bgx.restore();

@@ -49,7 +49,6 @@ export default class Minion {
     }
 
     touchDown(){
-        // if (this.x >= 800) console.log("touchdown")
         return this.x >= 800;
     }
 
@@ -57,21 +56,15 @@ export default class Minion {
         return this.health <= 0;
     }
 
-    // // each subclass has its own draw method to account for diffs in image size and shift
-    // draw(ctx) {
-    //     const image = new Image();
-    //     image.src = this.image;
-    //     ctx.drawImage(image, this.x, this.y + this.topOffset, this.size, this.size);
-    //     this.drawHealthBar(ctx);
-    // }
-
     drawHealthBar(ctx) {
         const barLength = this.width;
         const barHeight = 5;
+        ctx.save();
         ctx.fillStyle = "#8B8B8B"
         ctx.fillRect(this.x, this.y + this.topOffset + this.height - 5, barLength, barHeight);
         ctx.fillStyle = this.hpColor();
         ctx.fillRect(this.x, this.y + this.topOffset + this.height - 5, barLength * (this.health / this.maxHealth), barHeight);
+        ctx.restore();
     }
 
     hpColor() {
@@ -111,6 +104,7 @@ export default class Minion {
         this.checkBlocked(guards)
         this.strike(time);
         this.move(time);
+
         ctx.save();
         ctx.shadowColor = "#171717";
         ctx.shadowBlur = 15;
@@ -118,6 +112,7 @@ export default class Minion {
         ctx.shadowOffsetY = 20;
         this.draw(ctx);
         ctx.restore();
+
         this.drawHealthBar(ctx);
     }
 

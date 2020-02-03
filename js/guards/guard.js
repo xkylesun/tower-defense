@@ -7,14 +7,6 @@ export default class Guard {
         this.height = 60;
         this.width = 60;
 
-        // this.health = 1000;
-        // this.maxHealth = this.health;
-        // this.attack = 20;
-        // this.attackInterval = 1000;
-        // this.rangeX = 1 * 80;
-        // this.rangeY = 0;
-        // this.cost = 7;
-
         this.enemiesInRange = [];
         this.lastAttacked = 0;
 
@@ -22,7 +14,6 @@ export default class Guard {
 
         this.shift = 0;
         this.lastShift = 0;
-
     }
 
     CheckInRange(enemies){
@@ -33,7 +24,6 @@ export default class Guard {
                 temp.push(enemy)
             }
         }
-        // debugger
         // sort by distance asc
         this.enemiesInRange = temp.sort((a, b) => b.x - a.x);
     }
@@ -55,11 +45,13 @@ export default class Guard {
         const barLength = this.width;
         const barHeight = 5;
 
+        ctx.save();
         ctx.fillStyle = "#8B8B8B"
         ctx.fillRect(this.x + 10, this.y + this.topOffset + this.height + 15, barLength, barHeight);
         
         ctx.fillStyle = this.hpColor();
         ctx.fillRect(this.x + 10, this.y + this.topOffset + this.height + 15, barLength * (this.health / this.maxHealth), barHeight);
+        ctx.restore();
     }
 
     hpColor() {
@@ -95,11 +87,9 @@ export default class Guard {
         if (this.enemiesInRange.length > 0  && this.standing) {
             this.standing = false;
             this.shift = 0;
-            // debugger
         } else if (!this.standing && this.enemiesInRange.length < 1) {
             this.standing = true;
             this.shift = 0;
-            // debugger
         }
 
         let time = new Date().getTime();
@@ -107,7 +97,6 @@ export default class Guard {
         if (time - this.lastShift > interval) {
             this.shift += imageWidth / frames;
             this.lastShift = time;
-            // debugger
         }
 
         if (this.shift >= imageWidth) {

@@ -28,13 +28,12 @@ export default class Game {
         this.topOffset = TOP_OFFSET;
         this.width = 800;
         this.height = 600;
-        this.cost = 9;
+        this.cost = 90;
         this.life = 3;
         this.kill = 0;
 
         this.enemiesTotal = 30;
         this.enemiesRemaining = this.enemiesTotal;
-
         // this.guardsRemaining = 8;
 
         this.enemies = [];
@@ -59,7 +58,6 @@ export default class Game {
         // this.secondWaveEnd = startTime + 155000;
 
         this.waveInterval = 10000;
-        // this.waveInterval = 3000;
         this.lastSpawnRow = null;
 
         this.guardSelected = null;
@@ -69,7 +67,6 @@ export default class Game {
         this.c = this.entry.c;
         this.ctx = this.entry.ctx;
 
-
         this.playIcon = new Image();
         this.playIcon.src = playButton;
         this.pauseIcon = new Image();
@@ -77,7 +74,6 @@ export default class Game {
 
         this.addListeners = this.addListeners.bind(this);
         this.restartGame = this.restartGame.bind(this);
-
     }
 
     genCost(){
@@ -139,31 +135,32 @@ export default class Game {
 
     drawStat(){
         const ctx = this.ctx;
+        ctx.save();
         //life
         ctx.fillStyle = "white";
-        // ctx.fillRect(700, 550, 30, 15)
         ctx.font = 'bold 18px Open sans';
         ctx.fillText('LIFE: ' + Math.max(this.life, 0), 250, 35);
 
         // remaining
         ctx.fillStyle = "white";
-        // ctx.fillRect(700, 550, 30, 15)
         ctx.font = 'bold 18px Open sans';
         ctx.fillText('ENEMIES: ' + (this.enemiesRemaining + this.enemies.length) + "/" + this.enemiesTotal, 400, 35);
 
         // cost
         ctx.fillStyle = "white";
-        // ctx.fillRect(700, 550, 30, 15)
         ctx.font = 'bold 18px Open sans';
         ctx.fillText('COST: ' + this.cost, 700, 560);
+        ctx.restore();
     }
 
     drawControl(){
         const ctx = this.ctx;
+        ctx.save();
         ctx.fillStyle = "#8B8B8B"; // lite gray
         ctx.fillRect(740, 10, 40, 40);
         let control = this.paused ? this.playIcon : this.pauseIcon;
         ctx.drawImage(control, 745, 15, 30, 30);
+        ctx.restore();
     }
 
     drawPaused(){
@@ -247,15 +244,11 @@ export default class Game {
         this.drawActiveCell();
         this.drawGuardSelected();
 
-
         this.genCost(time);
         this.drawStat();
 
         this.firstWave(time);
         this.secondWave(time);
-
-        // this.drawEnemies(time);
-        // this.drawGuards(time);
 
         this.drawShop();
         this.drawControl();
@@ -272,14 +265,11 @@ export default class Game {
                 requestAnimationFrame(this.animate.bind(this))
             } 
         }
-
     }
 
     win(){
         if(this.enemies.length === 0 && this.enemiesRemaining === 0 && this.life > 0){
-            // setTimeout(() => this.gameOver = true, 2000);
             this.gameOver = true;
-
             this.drawGameOver("M I S S I O N  C L E A R E D");
         }
     }
@@ -287,7 +277,6 @@ export default class Game {
     lost(){
         if (this.life <= 0){
             this.gameOver = true;
-
             this.drawGameOver("Y O U  L O S T");
         }
     }
@@ -354,18 +343,16 @@ export default class Game {
             let x = Math.floor(this.mouseX / 80) * 80;
             let y = Math.floor((this.mouseY - this.topOffset) / 80) * 80 + this.topOffset;
             if (this.validCell(this.mouseX, this.mouseY)){
-
+                ctx.save();
                 // draw range in blue
                 ctx.fillStyle = "rgb(87, 166, 186, 0.5)";
                 let rangeX = this.guardSelected.rangeX;
                 let rangeY = this.guardSelected.rangeY;
                 ctx.fillRect(x + 1 - rangeX, y + 1 - rangeY, rangeX + 79, 79 + rangeY * 2);
-                // ctx.fillRect(x + 1, y + 1 - this.guardSelected.rangeY, 79, this.guardSelected.rangeY * 3);
-                
                 // draw active cell in green
                 ctx.fillStyle = "rgb(118,171, 118, 0.5)";
                 ctx.fillRect(x + 1, y + 1, 79, 79);
-
+                ctx.restore();
             }
         }
     }
@@ -375,7 +362,7 @@ export default class Game {
             this.cost -= guard.cost;
             this.guards[Math.floor(guard.y / 80)][Math.floor(guard.x / 80)] = guard;
         } else {
-            console.log("not enough cost")
+            console.log("not enough cost");
         };
     }
 
@@ -399,6 +386,7 @@ export default class Game {
         // this.secondWaveEnd += this.pausedTime;
         this.lastCostTime += this.pausedTime;
         this.lastWaveTime += this.pausedTime;
+        // reset pause time
         this.pausedTime = 0;
     }
 
@@ -424,7 +412,6 @@ export default class Game {
         let btnText = 'BACK TO MAIN';
         ctx.fillText(btnText, this.width / 2 - ctx.measureText(btnText).width / 2, this.height / 2 + 85);
         ctx.restore();
-
     }
 
     restartGame(x, y){
@@ -433,10 +420,7 @@ export default class Game {
             const clone = this.c.cloneNode(true);
             this.c = clone;
             this.gameOver = false;
-
             this.entry.start();
         }
     }
-
-
 }
