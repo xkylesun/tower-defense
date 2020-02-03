@@ -1,7 +1,6 @@
 
 export const TOP_OFFSET = 60;
 
-// import Entry from "./entry";
 import Mushroom from "./enemies/mushroom";
 import Dragon from "./enemies/dragon";
 
@@ -157,9 +156,9 @@ export default class Game {
         const ctx = this.ctx;
         ctx.save();
         ctx.fillStyle = "#8B8B8B"; // lite gray
-        ctx.fillRect(740, 10, 40, 40);
+        ctx.fillRect(760, 10, 40, 40);
         let control = this.paused ? this.playIcon : this.pauseIcon;
-        ctx.drawImage(control, 745, 15, 30, 30);
+        ctx.drawImage(control, 765, 15, 30, 30);
         ctx.restore();
     }
 
@@ -367,7 +366,7 @@ export default class Game {
     }
 
     pauseGame(x, y) {
-        if (x > 740 && x < 780 && y > 10 && y < 50 && !this.gameOver) {
+        if (x > 760 && x < 800 && y > 10 && y < 50 && !this.gameOver) {
             this.paused = !this.paused;
             if (this.paused) {
                 this.pauseInterval = setInterval(() => this.pausedTime += 100, 100)

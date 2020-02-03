@@ -15,8 +15,8 @@
 </head>
 <body>
     <div class="head-frame">
-        <h1 class="title">G U R A D I A N S</h1>
-        <p class="desc">Defeat the invading minions and protect your crystal!</p>
+        <h1 class="head-title">G U R A D I A N S</h1>
+        <p class="head-desc">Defeat the invading minions and protect your crystal!</p>
         <div class="credit-frame">
 
             <a target="_blank" href="https://github.com/xkylesun">
@@ -28,15 +28,75 @@
             </a>
         </div>
     </div>
+    <div class="gameplay-frame">
+        <div class="gameplay">
+            <h1>How to play:</h1>
+            <ul>
+                <li>
+                    <p>Drag guards to summon them to the battlefield</p>
+                </li>
+                <li>
+                    <p>Summoning guard will reduce your available cost</p>
+                </li>
+                <li>
+                    <p>Cost will regenerate over time</p>
+                </li>
+                <li>
+                    <p>Have fun!</p>
+                </li>
+            </ul>
+        </div>
+        <div class="character">
+            <div class="desc-frame">
+                <ul class="char-list">
+                    <li>
+                        <img src="assets/v3.png" id="vanguard" class="char selected">
+                    </li>
+                    <li>
+                        <img src="assets/a3.png" id="archer" class="char">
+                    </li>
+                    <li>
+                        <img src="assets/b3.png" id="berserker" class="char">
+                    </li>
+                    <li>
+                        <img src="assets/h3.png" id="priest" class="char">
+                    </li>
+                </ul>
+                <div class="desc-text">
+                    <span class="desc-title">
+                        <h2>Class: </h2>
+                        <h2>Skill: </h2>
+                    </span>
+                    <span id="desc-vanguard" class="desc">
+                        <h2>Vanguard</h2>
+                        <h2>Summon at low cost</h2>
+                    </span>
+                    <span id="desc-archer" class="desc hidden">
+                        <h2>Archer</h2>
+                        <h2>Ranged attack</h2>
+                    </span>
+                    <span id="desc-berserker" class="desc hidden">
+                        <h2>Berserker</h2>
+                        <h2>Attack all blocking enemies</h2>
+                    </span>
+                    <span id="desc-priest" class="desc hidden">
+                        <h2>Priest</h2>
+                        <h2>Heal allies</h2>
+                    </span>
+
+                </div>
+            </div>
+        </div>
+        <div class="hex-frame">
+            <canvas id="hexagon"></canvas>
+        </div>
+    </div>
+
+
     <div class="body-frame">
         <div class="canvas-frame">
             <canvas id="canvas"></canvas>
             <canvas id="background"></canvas>
-        </div>
-        <div class="desc-frame">
-            <div class="gameplay"></div>
-            <div class="character"></div>
-            <canvas id="description"></canvas>
         </div>
     </div>
 

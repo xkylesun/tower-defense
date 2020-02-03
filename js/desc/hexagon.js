@@ -1,30 +1,26 @@
 export default class Hexagon{
-    constructor(spec){
-        this.width = spec.width;
-        this.height = spec.height;
+    constructor(ctx, data){
+        this.width = 200;
+        this.height = 200;
 
+        this.ctx = ctx;
+
+        this.topOffset = 30;
         this.side = 6;
 
         this.center = this.width / 2;
         this.radius = this.center - 50;
 
         this.angle = Math.PI * 2 / this.side;
-        this.data = spec.data || { Atk: 100, HP: 100, Cost: 70, Range: 30, AtkSpeed: 40, ability: 80 };
-
-        this.c = document.getElementById("description");
-        this.c.width = this.width;
-        this.c.height = this.height;
-        this.ctx = this.c.getContext("2d");
-
+        this.data = data || { Attack: 0, Health: 0, Cost: 0, Range: 0, Speed: 0, Skill: 0 }
     }
 
-    drawPolygon (ctx) {
+    drawPolygon () {
+        const ctx = this.ctx;
         ctx.save();
-        ctx.strokeStyle = "black";
-    
+        ctx.strokeStyle = "#137BBE";
         // create inner hex with diff r
         let r = this.radius / this.side;
-
         for (let i = 0; i < this.side; i++) {
             ctx.beginPath();
             let currR = r * (i + 1);
@@ -40,7 +36,8 @@ export default class Hexagon{
     }
 
     // data = {Atk: 100, HP: 100, Cost: 70, Range: 30, AtkSpeed: 40, ability: 80}
-    drawRegion(ctx) {
+    drawRegion() {
+        const ctx = this.ctx;
         ctx.save();
         ctx.beginPath();
         const statValues = Object.values(this.data);
@@ -56,9 +53,10 @@ export default class Hexagon{
     }
 
     drawLine(){
+        const ctx = this.ctx;
         ctx.save();
         ctx.beginPath();
-        ctx.strokeStyle = "black";
+        ctx.strokeStyle = "#137BBE";
         for (let i = 0; i < this.side; i++) {
             let x = Math.cos(this.angle * i) * this.radius + this.center;
             let y = Math.sin(this.angle * i) * this.radius + this.center;
@@ -70,11 +68,12 @@ export default class Hexagon{
     }
 
 
-    drawText(ctx) {
+    drawText() {
+        const ctx = this.ctx;
         ctx.save();
-        ctx.fillStyle = "black";
-        ctx.font = "12px Open sans";
-        let margin = 12;
+        ctx.fillStyle = "#343A40";
+        ctx.font = "10px Open sans";
+        let margin = 10;
         let statKeys = Object.keys(this.data);
 
         for (let i = 0; i < this.side; i++) {
@@ -86,9 +85,9 @@ export default class Hexagon{
             } else if (this.angle * i > Math.PI / 2 && this.angle * i <= Math.PI) {
                 ctx.fillText(text, x - ctx.measureText(text).width, y + margin);
             } else if (this.angle * i > Math.PI && this.angle * i <= Math.PI * 3 / 2) {
-                ctx.fillText(text, x - ctx.measureText(text).width, y);
+                ctx.fillText(text, x - ctx.measureText(text).width, y - margin / 3);
             } else {
-                ctx.fillText(text, x, y);
+                ctx.fillText(text, x, y - margin / 2);
             }
         }
         ctx.restore();
