@@ -22,8 +22,6 @@ body {
     100%{background-position:0% 99%}
 }
 
-@import url(//db.onlinewebfonts.com/c/11b9313c156261bdee0bc8b745b34450?family=DwarvenAxeBBW00-Regular);
-
 .head-frame{
 	display: flex;
 	justify-content: center;

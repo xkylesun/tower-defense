@@ -17,7 +17,7 @@ module.exports = {
                 test: /\.(png|jpe?g|gif)$/i,
                 use: [
                     {
-                        loader: 'file-loader?name=/assets/[name].[ext]',
+                        loader: 'file-loader?name=assets/[name].[ext]',
                     },
                 ],
 
@@ -25,10 +25,14 @@ module.exports = {
             {
                 test: /\.svg/,
                 use: {
-                    loader: 'svg-url-loader?name=/assets/[name].[ext]',
+                    loader: 'svg-url-loader?name=assets/[name].[ext]',
                     options: {}
                 }
-            }
+            },
+            {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
+            },
         ],
     },
 };

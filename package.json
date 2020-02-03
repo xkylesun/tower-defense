@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "entry.js",
-"scripts": {
-    "start": "node js/entry.js",
+  "scripts": {
+    "start": "webpack -w --mode=development",
     "build": "webpack",
-    "heroku-postbuild": "webpack"
+    "heroku-postbuild": "webpack",
+    "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
@@ -25,5 +26,10 @@
     "svg-url-loader": "^3.0.3",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
+  },
+  "devDependencies": {
+    "css-loader": "^3.4.2",
+    "gh-pages": "^2.2.0",
+    "style-loader": "^1.1.3"
   }
 }

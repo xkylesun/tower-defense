@@ -27,7 +27,7 @@ export default class Game {
         this.topOffset = TOP_OFFSET;
         this.width = 800;
         this.height = 600;
-        this.cost = 90;
+        this.cost = 9;
         this.life = 3;
         this.kill = 0;
 
