@@ -907,6 +907,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _menu__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./menu */ "./js/menu.js");
 
 
+// require('file-loader?name=[name].[ext]!../index.html');
+// require('file-loader?name=styles/[name].[ext]!../styles/game.css');
 
 window.addEventListener('load', () => {
     new _menu__WEBPACK_IMPORTED_MODULE_1__["default"]().start();
@@ -970,7 +972,7 @@ class Game {
         this.topOffset = TOP_OFFSET;
         this.width = 800;
         this.height = 600;
-        this.cost = 90;
+        this.cost = 9;
         this.life = 3;
         this.kill = 0;
 
