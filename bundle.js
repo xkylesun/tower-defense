@@ -907,8 +907,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _menu__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./menu */ "./js/menu.js");
 
 
-// require('file-loader?name=[name].[ext]!../index.html');
-// require('file-loader?name=styles/[name].[ext]!../styles/game.css');
+__webpack_require__(/*! file-loader?name=[name].[ext]!../index.html */ "./node_modules/file-loader/dist/cjs.js?name=[name].[ext]!./index.html");
+__webpack_require__(/*! file-loader?name=styles/[name].[ext]!../styles/game.css */ "./node_modules/file-loader/dist/cjs.js?name=styles/[name].[ext]!./styles/game.css");
+__webpack_require__(/*! file-loader?name=styles/[name].[ext]!../styles/00_reset.css */ "./node_modules/file-loader/dist/cjs.js?name=styles/[name].[ext]!./styles/00_reset.css");
 
 window.addEventListener('load', () => {
     new _menu__WEBPACK_IMPORTED_MODULE_1__["default"]().start();
@@ -1976,6 +1977,45 @@ const toCanvasY = (c, e) => {
 }
 
 
+
+/***/ }),
+
+/***/ "./node_modules/file-loader/dist/cjs.js?name=[name].[ext]!./index.html":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/file-loader/dist/cjs.js?name=[name].[ext]!./index.html ***!
+  \*****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "index.html");
+
+/***/ }),
+
+/***/ "./node_modules/file-loader/dist/cjs.js?name=styles/[name].[ext]!./styles/00_reset.css":
+/*!*********************************************************************************************!*\
+  !*** ./node_modules/file-loader/dist/cjs.js?name=styles/[name].[ext]!./styles/00_reset.css ***!
+  \*********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "styles/00_reset.css");
+
+/***/ }),
+
+/***/ "./node_modules/file-loader/dist/cjs.js?name=styles/[name].[ext]!./styles/game.css":
+/*!*****************************************************************************************!*\
+  !*** ./node_modules/file-loader/dist/cjs.js?name=styles/[name].[ext]!./styles/game.css ***!
+  \*****************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "styles/game.css");
 
 /***/ }),
 
