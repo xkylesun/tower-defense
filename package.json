@@ -2,7 +2,7 @@
   "name": "guardians",
   "version": "1.0.0",
   "description": "",
-  "main": "./js/entry.js",
+  "main": "entry.js",
 "scripts": {
     "start": "node js/entry.js",
     "build": "webpack",
