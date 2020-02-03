@@ -4,8 +4,9 @@
   "description": "",
   "main": "./js/entry.js",
 "scripts": {
+    "start": "node js/entry.js",
     "build": "webpack",
-    "heroku-postbuild": "webpack -p --config ./webpack.prod.config.js --progress"
+    "heroku-postbuild": "webpack"
   },
   "repository": {
     "type": "git",
