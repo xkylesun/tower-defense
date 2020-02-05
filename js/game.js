@@ -59,6 +59,8 @@ export default class Game {
         this.waveInterval = 10000;
         this.lastSpawnRow = null;
 
+        this.costInterval = 1000;
+
         this.guardSelected = null;
         this.mouseX = null;
         this.mouseY = null;
@@ -77,7 +79,7 @@ export default class Game {
 
     genCost(){
         let time = new Date().getTime()
-        if (time - this.lastCostTime > 2000){
+        if (time - this.lastCostTime > this.costInterval){
             this.cost += 1;
             this.lastCostTime = time;
         }
@@ -408,7 +410,7 @@ export default class Game {
         ctx.fillRect(300, 350, 200, 50);
         ctx.fillStyle = "white";
         ctx.font = '28px Impact';
-        let btnText = 'BACK TO MAIN';
+        let btnText = 'RETURN';
         ctx.fillText(btnText, this.width / 2 - ctx.measureText(btnText).width / 2, this.height / 2 + 85);
         ctx.restore();
     }

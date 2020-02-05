@@ -28,7 +28,7 @@ export default class Vanguard extends Guard {
         this.icon.src = icon;
 
         this.standShiftInt = 100;
-        this.attackShiftInt = 120;
+        this.attackShiftInt = 140;
     }
 
     draw(ctx) {

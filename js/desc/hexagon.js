@@ -1,15 +1,15 @@
 export default class Hexagon{
-    constructor(ctx, data){
-        this.width = 200;
-        this.height = 200;
+    constructor(c, data){
+        this.width = c.width;
+        this.height = c.height;
 
-        this.ctx = ctx;
+        this.ctx = c.getContext("2d");;
 
         this.topOffset = 30;
         this.side = 6;
 
         this.center = this.width / 2;
-        this.radius = this.center - 50;
+        this.radius = this.center - 35;
 
         this.angle = Math.PI * 2 / this.side;
         this.data = data || { Attack: 0, Health: 0, Cost: 0, Range: 0, Speed: 0, Skill: 0 }
@@ -17,6 +17,7 @@ export default class Hexagon{
 
     drawPolygon () {
         const ctx = this.ctx;
+        ctx.clearRect(0, 0, 200, 200);
         ctx.save();
         ctx.strokeStyle = "#137BBE";
         // create inner hex with diff r

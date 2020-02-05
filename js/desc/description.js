@@ -11,9 +11,9 @@ export default class Description {
         };
 
         this.c = document.getElementById("hexagon");
-        this.c.width = 200;
-        this.c.height = 200;
-        this.ctx = this.c.getContext("2d");
+        this.c.width = 220;
+        this.c.height = 220;
+        
     };
 
     init() {
@@ -22,9 +22,7 @@ export default class Description {
     }
 
     drawHex(name){
-        const ctx = this.ctx;
-        ctx.clearRect(0, 0, 200, 200);
-        const hex = new Hexagon(ctx, this.data[name]);
+        const hex = new Hexagon(this.c, this.data[name]);
         hex.drawPolygon();
         hex.drawLine();
         hex.drawRegion();
