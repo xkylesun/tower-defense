@@ -505,9 +505,9 @@ class Description {
         };
 
         this.c = document.getElementById("hexagon");
-        this.c.width = 200;
-        this.c.height = 200;
-        this.ctx = this.c.getContext("2d");
+        this.c.width = 220;
+        this.c.height = 220;
+        
     };
 
     init() {
@@ -516,9 +516,7 @@ class Description {
     }
 
     drawHex(name){
-        const ctx = this.ctx;
-        ctx.clearRect(0, 0, 200, 200);
-        const hex = new _hexagon__WEBPACK_IMPORTED_MODULE_0__["default"](ctx, this.data[name]);
+        const hex = new _hexagon__WEBPACK_IMPORTED_MODULE_0__["default"](this.c, this.data[name]);
         hex.drawPolygon();
         hex.drawLine();
         hex.drawRegion();
@@ -569,17 +567,17 @@ class Description {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Hexagon; });
 class Hexagon{
-    constructor(ctx, data){
-        this.width = 200;
-        this.height = 200;
+    constructor(c, data){
+        this.width = c.width;
+        this.height = c.height;
 
-        this.ctx = ctx;
+        this.ctx = c.getContext("2d");;
 
         this.topOffset = 30;
         this.side = 6;
 
         this.center = this.width / 2;
-        this.radius = this.center - 50;
+        this.radius = this.center - 35;
 
         this.angle = Math.PI * 2 / this.side;
         this.data = data || { Attack: 0, Health: 0, Cost: 0, Range: 0, Speed: 0, Skill: 0 }
@@ -587,6 +585,7 @@ class Hexagon{
 
     drawPolygon () {
         const ctx = this.ctx;
+        ctx.clearRect(0, 0, 200, 200);
         ctx.save();
         ctx.strokeStyle = "#137BBE";
         // create inner hex with diff r
@@ -1021,6 +1020,8 @@ class Game {
         this.waveInterval = 10000;
         this.lastSpawnRow = null;
 
+        this.costInterval = 1000;
+
         this.guardSelected = null;
         this.mouseX = null;
         this.mouseY = null;
@@ -1039,7 +1040,7 @@ class Game {
 
     genCost(){
         let time = new Date().getTime()
-        if (time - this.lastCostTime > 2000){
+        if (time - this.lastCostTime > this.costInterval){
             this.cost += 1;
             this.lastCostTime = time;
         }
@@ -1775,7 +1776,7 @@ class Vanguard extends _guard__WEBPACK_IMPORTED_MODULE_0__["default"] {
         this.icon.src = _assets_v3_png__WEBPACK_IMPORTED_MODULE_3__["default"];
 
         this.standShiftInt = 100;
-        this.attackShiftInt = 120;
+        this.attackShiftInt = 140;
     }
 
     draw(ctx) {
