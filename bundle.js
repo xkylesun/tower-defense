@@ -685,23 +685,24 @@ __webpack_require__.r(__webpack_exports__);
 
 class Dragon extends _minion__WEBPACK_IMPORTED_MODULE_2__["default"] {
     constructor(spec) {
-        super(spec)
+        super(spec);
+
         this.health = 400;
         this.maxHealth = this.health;
+
         this.attack = 40;
+        this.attackFrame = 4;
+        this.attackShiftInt = 160;
+
         this.moveInterval = 50;
         this.moveLength = 2;
-        this.attackInterval = 1000;
-
-        this.attackShiftInt = 150;
-        this.moveShiftInt = 100;
+        this.moveShiftInt = 120;
 
         this.imgMoving = new Image();
         this.imgMoving.src = _assets_sprite_dragon_moving_png__WEBPACK_IMPORTED_MODULE_0__["default"];
 
         this.imgAttacking = new Image();
         this.imgAttacking.src = _assets_sprite_dragon_attacking2_png__WEBPACK_IMPORTED_MODULE_1__["default"];
-
     }
 
     draw(ctx) {
@@ -749,7 +750,7 @@ class Minion {
         this.lastAttack = 0;
         this.lastMove = 0;
         this.target = null;
-        this.moving = true;
+        this.attacking = false;
 
         this.shift = 0;
         this.lastShift = 0;
@@ -763,14 +764,12 @@ class Minion {
         }
     }
 
-    strike(time){
+    strike(){
         if (this.target){
-            if (time - this.lastAttack > this.attackInterval) {
-                this.target.health -= this.attack;
-                this.lastAttack = time;
-            }
+            this.target.health -= this.attack;
         }
     }
+    
 
     move(time){
         if (!this.target){
@@ -812,30 +811,38 @@ class Minion {
     }
 
     shiftFrame(imageWidth, frames) {
-        // reset shift when status changed
-        if (this.target && this.moving){
-            this.moving = false;
-            this.shift = 0;
-        } else if (!this.moving && !this.target) {
-            this.moving = true;
-            this.shift = 0;
-        }
-
         let time = new Date().getTime();
         let interval = this.target ? this.attackShiftInt : this.moveShiftInt;
-        if (time - this.lastShift > interval) {
-            this.shift += imageWidth / frames;
-            this.lastShift = time;
+        let frameWidth = Math.floor(imageWidth / frames);
+
+        // due to sprite resource shift from right to left
+
+        // reset shift when status changed
+        if (this.target && !this.attacking){
+            this.attacking = true;
+            this.shift = imageWidth - frameWidth;
+        } else if (this.attacking && !this.target) {
+            this.attacking = false;
+            this.shift = imageWidth - frameWidth;
         }
 
-        if (this.shift >= imageWidth) {
-            this.shift = 0;
+        if (time - this.lastShift > interval) {
+            this.shift -= frameWidth;
+
+            if (this.shift < 0) {
+                this.shift = imageWidth - frameWidth;
+            }
+
+            this.lastShift = time;
+            
+            if (this.shift === this.attackFrame * frameWidth && this.attacking) {
+                this.strike();
+            }
         }
     }
 
     update(ctx, time, guards) {
         this.checkBlocked(guards)
-        this.strike(time);
         this.move(time);
 
         ctx.save();
@@ -874,32 +881,32 @@ __webpack_require__.r(__webpack_exports__);
 class Mushroom extends _minion__WEBPACK_IMPORTED_MODULE_0__["default"]{
     constructor(spec){
         super(spec);
-        this.health = 200;
+
+        this.health = 250;
         this.maxHealth = this.health;
+
         this.attack = 30;
+        this.attackFrame = 2;
+        this.attackShiftInt = 180;
+
         this.moveInterval = 100;
         this.moveLength = 2;
-        this.attackInterval = 1200;
-
-        this.attackShiftInt = 150;
-        this.moveShiftInt = 120;
+        this.moveShiftInt = 140;
 
         this.imgMoving = new Image();
         this.imgMoving.src = _assets_sprite_mushroom_moving_png__WEBPACK_IMPORTED_MODULE_1__["default"];
 
         this.imgAttacking = new Image();
         this.imgAttacking.src = _assets_sprite_mushroom_attacking_png__WEBPACK_IMPORTED_MODULE_2__["default"];
-
-        this.draw = this.draw.bind(this);
     }
 
     draw(ctx) {
         if (!this.target) {
             ctx.drawImage(this.imgMoving, 0 + this.shift, 0, 140, 140, this.x - 5, this.y - 10 + this.topOffset, this.width, this.height);
-            this.shiftFrame(690, 5);
+            this.shiftFrame(700, 5);
         } else {
             ctx.drawImage(this.imgAttacking, 0 + this.shift, 0, 140, 140, this.x - 5, this.y - 10 + this.topOffset, this.width, this.height);
-            this.shiftFrame(714, 5);
+            this.shiftFrame(750, 5);
         }
     }
 }
@@ -1142,6 +1149,7 @@ class Game {
     drawEnemies(time){
         for (const enemy of this.enemies) {
             enemy.update(this.ctx, time, this.guards);
+
             if (enemy.touchDown()) {
                 this.life -= 1;
                 this.enemies = this.enemies.filter(min => (min !== enemy));
@@ -1153,14 +1161,14 @@ class Game {
         }
     }
 
-    drawGuards(time){
+    drawGuards(){
         let guards = this.guards.flat().filter(el => (el instanceof _guards_guard__WEBPACK_IMPORTED_MODULE_2__["default"]));
         for (const guard of guards) {
             // special rule for healer
             if (guard instanceof _guards_priest__WEBPACK_IMPORTED_MODULE_3__["default"]){
-                guard.update(this.ctx, time, guards);
+                guard.update(this.ctx, guards);
             } else {
-                guard.update(this.ctx, time, this.enemies);
+                guard.update(this.ctx, this.enemies);
             }
             if (guard.dead()) {
                 this.guards[Math.floor(guard.y / 80)][Math.floor(guard.x / 80)] = null;
@@ -1196,12 +1204,13 @@ class Game {
         const ctx = this.ctx;
         ctx.clearRect(0, 0, this.width, this.height);
 
-        this.drawEnemies(time);
-        this.drawGuards(time);
-
+        this.drawGuards();
+        
         this.win();
         this.lost();
         
+        this.drawEnemies(time);
+
         // hover effect of dragging guard
         this.drawActiveCell();
         this.drawGuardSelected();
@@ -1214,7 +1223,6 @@ class Game {
 
         this.drawShop();
         this.drawControl();
-
     }
 
     animate(){
@@ -1231,15 +1239,15 @@ class Game {
 
     win(){
         if(this.enemies.length === 0 && this.enemiesRemaining === 0 && this.life > 0){
-            this.gameOver = true;
             this.drawGameOver("M I S S I O N  C L E A R E D");
+            this.gameOver = true;
         }
     }
 
     lost(){
         if (this.life <= 0){
-            this.gameOver = true;
             this.drawGameOver("Y O U  L O S T");
+            this.gameOver = true;
         }
     }
 
@@ -1323,9 +1331,7 @@ class Game {
         if (this.cost >= guard.cost) {
             this.cost -= guard.cost;
             this.guards[Math.floor(guard.y / 80)][Math.floor(guard.x / 80)] = guard;
-        } else {
-            console.log("not enough cost");
-        };
+        } 
     }
 
     pauseGame(x, y) {
@@ -1414,12 +1420,10 @@ class Archer extends _guard__WEBPACK_IMPORTED_MODULE_0__["default"] {
         super(props);
         this.klass = "Archer";
 
-        this.health = 600;
+        this.health = 300;
         this.maxHealth = this.health;
-        this.attack = 80;
-        this.attackInterval = 2000;
 
-        this.rangeX = 3 * 80;
+        this.rangeX = 4 * 80;
         this.rangeY = 0;
         
         this.cost = 18;
@@ -1435,6 +1439,9 @@ class Archer extends _guard__WEBPACK_IMPORTED_MODULE_0__["default"] {
 
         this.standShiftInt = 100;
         this.attackShiftInt = 140;
+
+        this.attack = 60;
+        this.attackFrame = 8;
     }
 
     draw(ctx) {
@@ -1475,11 +1482,8 @@ class Berzerk extends _guard__WEBPACK_IMPORTED_MODULE_0__["default"] {
         super(props);
         this.klass = "Berserker";
 
-        this.health = 1200;
+        this.health = 600;
         this.maxHealth = this.health;
-
-        this.attack = 60;
-        this.attackInterval = 2500;
 
         this.rangeX = 1 * 80;
         this.rangeY = 0;
@@ -1497,16 +1501,16 @@ class Berzerk extends _guard__WEBPACK_IMPORTED_MODULE_0__["default"] {
 
         this.standShiftInt = 100;
         this.attackShiftInt = 120;
+
+        this.attack = 60;
+        this.attackFrame = 10;
     }
 
     // deal damage to all enemy in range
-    strike(time) {
+    strike() {
         if (this.enemiesInRange.length > 0) {
-            if (time - this.lastAttacked > this.attackInterval) {
-                for (const enemy of this.enemiesInRange){
-                    enemy.health -= this.attack;
-                }
-                this.lastAttacked = time;
+            for (const enemy of this.enemiesInRange){
+                enemy.health -= this.attack;
             }
         }
     }
@@ -1565,12 +1569,9 @@ class Guard {
         this.enemiesInRange = temp.sort((a, b) => b.x - a.x);
     }
 
-    strike(time){
+    strike(){
         if (this.enemiesInRange.length > 0){
-            if (time - this.lastAttacked > this.attackInterval) {
                 this.enemiesInRange[0].health -= this.attack;
-                this.lastAttacked = time;
-            }
         }
     }
 
@@ -1602,9 +1603,8 @@ class Guard {
         }
     }
 
-    update(ctx, time, enemies) {
+    update(ctx, enemies) {
         this.CheckInRange(enemies);
-        this.strike(time);
         ctx.save();
         ctx.shadowColor = "#171717";
         ctx.shadowBlur = 15;
@@ -1631,9 +1631,16 @@ class Guard {
 
         let time = new Date().getTime();
         let interval = this.standing ? this.standShiftInt : this.attackShiftInt;
+        let frameWidth = Math.floor(imageWidth / frames);
+
         if (time - this.lastShift > interval) {
-            this.shift += imageWidth / frames;
+            this.shift += frameWidth;
             this.lastShift = time;
+
+            // match attack to one frame
+            if (this.shift === this.attackFrame * frameWidth && !this.standing) {
+                this.strike();
+            }
         }
 
         if (this.shift >= imageWidth) {
@@ -1670,10 +1677,8 @@ class Priest extends _guard__WEBPACK_IMPORTED_MODULE_0__["default"]{
         super(props);
         this.klass = "Priest";
 
-        this.health = 100;
+        this.health = 400;
         this.maxHealth = this.health;
-        this.attack = 80;
-        this.attackInterval = 2000;
 
         this.rangeX = 1 * 80; // need fix
         this.rangeY = 1 * 80;
@@ -1691,6 +1696,9 @@ class Priest extends _guard__WEBPACK_IMPORTED_MODULE_0__["default"]{
 
         this.standShiftInt = 150;
         this.attackShiftInt = 120;
+
+        this.attack = 80;
+        this.attackFrame = 7;
     }
 
     // overwrite check allie
@@ -1710,12 +1718,9 @@ class Priest extends _guard__WEBPACK_IMPORTED_MODULE_0__["default"]{
     }
 
     //overwrite strike (heal)
-    strike(time) {
+    strike() {
         if (this.enemiesInRange.length > 0) {
-            if (time - this.lastAttacked > this.attackInterval) {
                 this.enemiesInRange[0].health = Math.min(this.enemiesInRange[0].health + this.attack, this.enemiesInRange[0].maxHealth);
-                this.lastAttacked = time;
-            }
         }
     }
 
@@ -1756,14 +1761,12 @@ class Vanguard extends _guard__WEBPACK_IMPORTED_MODULE_0__["default"] {
         super(props);
         this.klass = "Vanguard";
 
-        this.health = 1000;
+        this.health = 800;
         this.maxHealth = this.health;
-
-        this.attack = 30;
-        this.attackInterval = 1600;
 
         this.rangeX = 1 * 80;
         this.rangeY = 0;
+        
         this.cost = 7;
 
         this.imgStanding = new Image();
@@ -1777,6 +1780,9 @@ class Vanguard extends _guard__WEBPACK_IMPORTED_MODULE_0__["default"] {
 
         this.standShiftInt = 100;
         this.attackShiftInt = 140;
+
+        this.attack = 40;
+        this.attackFrame = 5;
     }
 
     draw(ctx) {
@@ -1788,7 +1794,6 @@ class Vanguard extends _guard__WEBPACK_IMPORTED_MODULE_0__["default"] {
             this.shiftFrame(3645, 9);
         }
     }
-
 }
 
 /***/ }),
