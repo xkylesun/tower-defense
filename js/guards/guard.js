@@ -28,7 +28,9 @@ export default class Guard {
         this.enemiesInRange = temp.sort((a, b) => b.x - a.x);
     }
 
-    strike(time){
+    strike(){
+        let time = new Date().getTime();
+
         if (this.enemiesInRange.length > 0){
             if (time - this.lastAttacked > this.attackInterval) {
                 this.enemiesInRange[0].health -= this.attack;
@@ -67,7 +69,7 @@ export default class Guard {
 
     update(ctx, time, enemies) {
         this.CheckInRange(enemies);
-        this.strike(time);
+        // this.strike(time);
         ctx.save();
         ctx.shadowColor = "#171717";
         ctx.shadowBlur = 15;
