@@ -8,14 +8,12 @@ export default class Vanguard extends Guard {
         super(props);
         this.klass = "Vanguard";
 
-        this.health = 1000;
+        this.health = 800;
         this.maxHealth = this.health;
-
-        this.attack = 30;
-        this.attackInterval = 140 * 9;
 
         this.rangeX = 1 * 80;
         this.rangeY = 0;
+        
         this.cost = 7;
 
         this.imgStanding = new Image();
@@ -29,23 +27,18 @@ export default class Vanguard extends Guard {
 
         this.standShiftInt = 100;
         this.attackShiftInt = 140;
+
+        this.attack = 40;
+        this.attackFrame = 5;
     }
 
     draw(ctx) {
         if (this.standing) {
             ctx.drawImage(this.imgStanding, 0 + this.shift, 0, 405, 312, this.x - 70, this.y + this.topOffset - 72, 200, 150);
-            this.matchAttackWithFrame(5265, 13);
+            this.shiftFrame(5265, 13);
         } else {
             ctx.drawImage(this.imgAttacking, 0 + this.shift, 0, 405, 312, this.x - 70, this.y + this.topOffset - 72, 200, 150);
-            this.matchAttackWithFrame(3645, 9);
+            this.shiftFrame(3645, 9);
         }
     }
-
-    matchAttackWithFrame(imageWidth, frames) {
-        this.shiftFrame(imageWidth, frames);
-        if (!this.standing && this.shift >= 2025 && this.shift < 2430){
-            this.strike();
-        }
-    }
-
 }

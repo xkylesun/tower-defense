@@ -9,10 +9,8 @@ export default class Priest extends Guard{
         super(props);
         this.klass = "Priest";
 
-        this.health = 100;
+        this.health = 400;
         this.maxHealth = this.health;
-        this.attack = 80;
-        this.attackInterval = 2000;
 
         this.rangeX = 1 * 80; // need fix
         this.rangeY = 1 * 80;
@@ -30,6 +28,9 @@ export default class Priest extends Guard{
 
         this.standShiftInt = 150;
         this.attackShiftInt = 120;
+
+        this.attack = 80;
+        this.attackFrame = 7;
     }
 
     // overwrite check allie
@@ -49,12 +50,9 @@ export default class Priest extends Guard{
     }
 
     //overwrite strike (heal)
-    strike(time) {
+    strike() {
         if (this.enemiesInRange.length > 0) {
-            if (time - this.lastAttacked > this.attackInterval) {
                 this.enemiesInRange[0].health = Math.min(this.enemiesInRange[0].health + this.attack, this.enemiesInRange[0].maxHealth);
-                this.lastAttacked = time;
-            }
         }
     }
 

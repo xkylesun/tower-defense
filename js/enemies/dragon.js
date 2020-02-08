@@ -5,23 +5,24 @@ import Minion from "./minion";
 
 export default class Dragon extends Minion {
     constructor(spec) {
-        super(spec)
+        super(spec);
+
         this.health = 400;
         this.maxHealth = this.health;
+
         this.attack = 40;
+        this.attackFrame = 4;
+        this.attackShiftInt = 160;
+
         this.moveInterval = 50;
         this.moveLength = 2;
-        this.attackInterval = 1000;
-
-        this.attackShiftInt = 150;
-        this.moveShiftInt = 100;
+        this.moveShiftInt = 120;
 
         this.imgMoving = new Image();
         this.imgMoving.src = spriteMove;
 
         this.imgAttacking = new Image();
         this.imgAttacking.src = spriteAttack;
-
     }
 
     draw(ctx) {

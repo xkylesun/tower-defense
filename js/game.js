@@ -181,6 +181,7 @@ export default class Game {
     drawEnemies(time){
         for (const enemy of this.enemies) {
             enemy.update(this.ctx, time, this.guards);
+
             if (enemy.touchDown()) {
                 this.life -= 1;
                 this.enemies = this.enemies.filter(min => (min !== enemy));
@@ -192,14 +193,14 @@ export default class Game {
         }
     }
 
-    drawGuards(time){
+    drawGuards(){
         let guards = this.guards.flat().filter(el => (el instanceof Guard));
         for (const guard of guards) {
             // special rule for healer
             if (guard instanceof Priest){
-                guard.update(this.ctx, time, guards);
+                guard.update(this.ctx, guards);
             } else {
-                guard.update(this.ctx, time, this.enemies);
+                guard.update(this.ctx, this.enemies);
             }
             if (guard.dead()) {
                 this.guards[Math.floor(guard.y / 80)][Math.floor(guard.x / 80)] = null;
@@ -235,12 +236,13 @@ export default class Game {
         const ctx = this.ctx;
         ctx.clearRect(0, 0, this.width, this.height);
 
-        this.drawEnemies(time);
-        this.drawGuards(time);
-
+        this.drawGuards();
+        
         this.win();
         this.lost();
         
+        this.drawEnemies(time);
+
         // hover effect of dragging guard
         this.drawActiveCell();
         this.drawGuardSelected();
@@ -253,7 +255,6 @@ export default class Game {
 
         this.drawShop();
         this.drawControl();
-
     }
 
     animate(){
@@ -270,15 +271,15 @@ export default class Game {
 
     win(){
         if(this.enemies.length === 0 && this.enemiesRemaining === 0 && this.life > 0){
-            this.gameOver = true;
             this.drawGameOver("M I S S I O N  C L E A R E D");
+            this.gameOver = true;
         }
     }
 
     lost(){
         if (this.life <= 0){
-            this.gameOver = true;
             this.drawGameOver("Y O U  L O S T");
+            this.gameOver = true;
         }
     }
 
@@ -362,9 +363,7 @@ export default class Game {
         if (this.cost >= guard.cost) {
             this.cost -= guard.cost;
             this.guards[Math.floor(guard.y / 80)][Math.floor(guard.x / 80)] = guard;
-        } else {
-            console.log("not enough cost");
-        };
+        } 
     }
 
     pauseGame(x, y) {

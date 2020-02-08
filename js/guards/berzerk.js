@@ -9,11 +9,8 @@ export default class Berzerk extends Guard {
         super(props);
         this.klass = "Berserker";
 
-        this.health = 1200;
+        this.health = 600;
         this.maxHealth = this.health;
-
-        this.attack = 60;
-        this.attackInterval = 2500;
 
         this.rangeX = 1 * 80;
         this.rangeY = 0;
@@ -31,16 +28,16 @@ export default class Berzerk extends Guard {
 
         this.standShiftInt = 100;
         this.attackShiftInt = 120;
+
+        this.attack = 60;
+        this.attackFrame = 10;
     }
 
     // deal damage to all enemy in range
-    strike(time) {
+    strike() {
         if (this.enemiesInRange.length > 0) {
-            if (time - this.lastAttacked > this.attackInterval) {
-                for (const enemy of this.enemiesInRange){
-                    enemy.health -= this.attack;
-                }
-                this.lastAttacked = time;
+            for (const enemy of this.enemiesInRange){
+                enemy.health -= this.attack;
             }
         }
     }

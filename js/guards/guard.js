@@ -29,13 +29,8 @@ export default class Guard {
     }
 
     strike(){
-        let time = new Date().getTime();
-
         if (this.enemiesInRange.length > 0){
-            if (time - this.lastAttacked > this.attackInterval) {
                 this.enemiesInRange[0].health -= this.attack;
-                this.lastAttacked = time;
-            }
         }
     }
 
@@ -67,9 +62,8 @@ export default class Guard {
         }
     }
 
-    update(ctx, time, enemies) {
+    update(ctx, enemies) {
         this.CheckInRange(enemies);
-        // this.strike(time);
         ctx.save();
         ctx.shadowColor = "#171717";
         ctx.shadowBlur = 15;
@@ -96,9 +90,16 @@ export default class Guard {
 
         let time = new Date().getTime();
         let interval = this.standing ? this.standShiftInt : this.attackShiftInt;
+        let frameWidth = Math.floor(imageWidth / frames);
+
         if (time - this.lastShift > interval) {
-            this.shift += imageWidth / frames;
+            this.shift += frameWidth;
             this.lastShift = time;
+
+            // match attack to one frame
+            if (this.shift === this.attackFrame * frameWidth && !this.standing) {
+                this.strike();
+            }
         }
 
         if (this.shift >= imageWidth) {

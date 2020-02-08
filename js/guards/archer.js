@@ -8,12 +8,10 @@ export default class Archer extends Guard {
         super(props);
         this.klass = "Archer";
 
-        this.health = 600;
+        this.health = 300;
         this.maxHealth = this.health;
-        this.attack = 80;
-        this.attackInterval = 2000;
 
-        this.rangeX = 3 * 80;
+        this.rangeX = 4 * 80;
         this.rangeY = 0;
         
         this.cost = 18;
@@ -29,6 +27,9 @@ export default class Archer extends Guard {
 
         this.standShiftInt = 100;
         this.attackShiftInt = 140;
+
+        this.attack = 60;
+        this.attackFrame = 8;
     }
 
     draw(ctx) {

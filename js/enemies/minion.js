@@ -16,7 +16,7 @@ export default class Minion {
         this.lastAttack = 0;
         this.lastMove = 0;
         this.target = null;
-        this.moving = true;
+        this.attacking = false;
 
         this.shift = 0;
         this.lastShift = 0;
@@ -30,14 +30,12 @@ export default class Minion {
         }
     }
 
-    strike(time){
+    strike(){
         if (this.target){
-            if (time - this.lastAttack > this.attackInterval) {
-                this.target.health -= this.attack;
-                this.lastAttack = time;
-            }
+            this.target.health -= this.attack;
         }
     }
+    
 
     move(time){
         if (!this.target){
@@ -79,30 +77,38 @@ export default class Minion {
     }
 
     shiftFrame(imageWidth, frames) {
-        // reset shift when status changed
-        if (this.target && this.moving){
-            this.moving = false;
-            this.shift = 0;
-        } else if (!this.moving && !this.target) {
-            this.moving = true;
-            this.shift = 0;
-        }
-
         let time = new Date().getTime();
         let interval = this.target ? this.attackShiftInt : this.moveShiftInt;
-        if (time - this.lastShift > interval) {
-            this.shift += imageWidth / frames;
-            this.lastShift = time;
+        let frameWidth = Math.floor(imageWidth / frames);
+
+        // due to sprite resource shift from right to left
+
+        // reset shift when status changed
+        if (this.target && !this.attacking){
+            this.attacking = true;
+            this.shift = imageWidth - frameWidth;
+        } else if (this.attacking && !this.target) {
+            this.attacking = false;
+            this.shift = imageWidth - frameWidth;
         }
 
-        if (this.shift >= imageWidth) {
-            this.shift = 0;
+        if (time - this.lastShift > interval) {
+            this.shift -= frameWidth;
+
+            if (this.shift < 0) {
+                this.shift = imageWidth - frameWidth;
+            }
+
+            this.lastShift = time;
+            
+            if (this.shift === this.attackFrame * frameWidth && this.attacking) {
+                this.strike();
+            }
         }
     }
 
     update(ctx, time, guards) {
         this.checkBlocked(guards)
-        this.strike(time);
         this.move(time);
 
         ctx.save();
