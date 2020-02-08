@@ -766,7 +766,7 @@ class Minion {
 
     strike(){
         if (this.target){
-            this.target.health -= this.attack;
+            this.target.health = Math.max(this.attack - this.target.health, 0);
         }
     }
     
@@ -1571,7 +1571,7 @@ class Guard {
 
     strike(){
         if (this.enemiesInRange.length > 0){
-                this.enemiesInRange[0].health -= this.attack;
+            this.enemiesInRange[0].health = Math.max(this.enemiesInRange[0].health - this.attack, 0);
         }
     }
 
