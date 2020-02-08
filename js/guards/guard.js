@@ -30,7 +30,7 @@ export default class Guard {
 
     strike(){
         if (this.enemiesInRange.length > 0){
-                this.enemiesInRange[0].health -= this.attack;
+            this.enemiesInRange[0].health = Math.max(this.enemiesInRange[0].health - this.attack, 0);
         }
     }
 

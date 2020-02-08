@@ -32,7 +32,7 @@ export default class Minion {
 
     strike(){
         if (this.target){
-            this.target.health -= this.attack;
+            this.target.health = Math.max(this.attack - this.target.health, 0);
         }
     }
     
