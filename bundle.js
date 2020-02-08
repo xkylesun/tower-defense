@@ -766,7 +766,7 @@ class Minion {
 
     strike(){
         if (this.target){
-            this.target.health = Math.max(this.attack - this.target.health, 0);
+            this.target.health -= this.attack;
         }
     }
     
@@ -795,7 +795,7 @@ class Minion {
         ctx.fillStyle = "#8B8B8B"
         ctx.fillRect(this.x, this.y + this.topOffset + this.height - 5, barLength, barHeight);
         ctx.fillStyle = this.hpColor();
-        ctx.fillRect(this.x, this.y + this.topOffset + this.height - 5, barLength * (this.health / this.maxHealth), barHeight);
+        ctx.fillRect(this.x, this.y + this.topOffset + this.height - 5, barLength * (Math.max(this.health,0) / this.maxHealth), barHeight);
         ctx.restore();
     }
 
@@ -1571,7 +1571,7 @@ class Guard {
 
     strike(){
         if (this.enemiesInRange.length > 0){
-            this.enemiesInRange[0].health = Math.max(this.enemiesInRange[0].health - this.attack, 0);
+            this.enemiesInRange[0].health -= this.attack;
         }
     }
 
@@ -1588,7 +1588,7 @@ class Guard {
         ctx.fillRect(this.x + 10, this.y + this.topOffset + this.height + 15, barLength, barHeight);
         
         ctx.fillStyle = this.hpColor();
-        ctx.fillRect(this.x + 10, this.y + this.topOffset + this.height + 15, barLength * (this.health / this.maxHealth), barHeight);
+        ctx.fillRect(this.x + 10, this.y + this.topOffset + this.height + 15, barLength * (Math.max(this.health, 0) / this.maxHealth), barHeight);
         ctx.restore();
     }
 
