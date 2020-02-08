@@ -32,7 +32,7 @@ export default class Minion {
 
     strike(){
         if (this.target){
-            this.target.health = Math.max(this.target.health - this.attack, 0);
+            this.target.health -= this.attack;
         }
     }
     
@@ -61,7 +61,7 @@ export default class Minion {
         ctx.fillStyle = "#8B8B8B"
         ctx.fillRect(this.x, this.y + this.topOffset + this.height - 5, barLength, barHeight);
         ctx.fillStyle = this.hpColor();
-        ctx.fillRect(this.x, this.y + this.topOffset + this.height - 5, barLength * (this.health / this.maxHealth), barHeight);
+        ctx.fillRect(this.x, this.y + this.topOffset + this.height - 5, barLength * (Math.max(this.health,0) / this.maxHealth), barHeight);
         ctx.restore();
     }
 

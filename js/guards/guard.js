@@ -30,7 +30,7 @@ export default class Guard {
 
     strike(){
         if (this.enemiesInRange.length > 0){
-            this.enemiesInRange[0].health = Math.max(this.enemiesInRange[0].health - this.attack, 0);
+            this.enemiesInRange[0].health -= this.attack;
         }
     }
 
@@ -47,7 +47,7 @@ export default class Guard {
         ctx.fillRect(this.x + 10, this.y + this.topOffset + this.height + 15, barLength, barHeight);
         
         ctx.fillStyle = this.hpColor();
-        ctx.fillRect(this.x + 10, this.y + this.topOffset + this.height + 15, barLength * (this.health / this.maxHealth), barHeight);
+        ctx.fillRect(this.x + 10, this.y + this.topOffset + this.height + 15, barLength * (Math.max(this.health, 0) / this.maxHealth), barHeight);
         ctx.restore();
     }
 
