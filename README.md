@@ -13,6 +13,9 @@
 * Letting minion move past the blue crystal will cost a life; each game start with three lives
 
 ## Documentation
+### OOP
+The design for this game follows the Object-oriented programming pattern. A superclass is created for both Guard and Minion class. Each type of guard is created from a subclass that extends the superclass. In such a way, class instances of the same type will share common attributes / functionalities written in the superclass and have their unique characteristics written on the subclass.
+
 ### Pace control
 The game pace is controlled by limiting the interval during which a function will be triggered. Cost regeneration, enemy spawn, attack, and play frame are controlled
 by its individual interval defined in the constructor
