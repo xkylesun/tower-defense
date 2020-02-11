@@ -8,27 +8,20 @@
 
 ## Gameplay
 * Drag guards to the battlefield to summon them
-* Guards has different stats and its unique skills set (ranged attack, heal, etc.)
+* Guards have different stats and its unique skills set (ranged attack, heal, etc.)
 * Summoning guard will reduce available cost, which will regenerate automatically over time
 * Letting minion move past the blue crystal will cost a life; each game start with three lives
 
 ## Documentation
 ### Pace control
-Game pace is controlled by limiting the interval during which a function will be triggered. Cost regeneration, enemy spawn, attack, and play frame are controlled
+The game pace is controlled by limiting the interval during which a function will be triggered. Cost regeneration, enemy spawn, attack, and play frame are controlled
 by its individual interval defined in the constructor
 ```javascript
 // game.js
-    // constructor
-    this.costInterval = 10000;
-    this.lastCostTime= 0;
-    
-    // cost regen
-    genCost(){
-      let time = new Date().getTime();
-      if (time - this.lastCostTime > this.costInterval){
-        this.cost += 1;
-        this.lastCostTime = time;
-      }
+    let time = new Date().getTime();
+    if (time - this.lastCostTime > this.costInterval){
+    this.cost += 1;
+    this.lastCostTime = time;
     }
 ```
 
