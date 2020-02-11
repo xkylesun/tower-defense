@@ -1,4 +1,4 @@
-# tower-defense
+# Guardian - a tower defense variation
 [Link to live site](https://xkylesun.github.io/tower-defense/) 
 
 ## Features
