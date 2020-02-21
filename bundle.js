@@ -585,7 +585,7 @@ class Hexagon{
 
     drawPolygon () {
         const ctx = this.ctx;
-        ctx.clearRect(0, 0, 200, 200);
+        ctx.clearRect(0, 0, this.width, this.height);
         ctx.save();
         ctx.strokeStyle = "#137BBE";
         // create inner hex with diff r
@@ -1046,7 +1046,7 @@ class Game {
     }
 
     genCost(){
-        let time = new Date().getTime()
+        let time = new Date().getTime();
         if (time - this.lastCostTime > this.costInterval){
             this.cost += 1;
             this.lastCostTime = time;
@@ -1967,9 +1967,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toCanvasX", function() { return toCanvasX; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toCanvasY", function() { return toCanvasY; });
 const toCanvasX = (c, e) => {
-    // if (c && e){
         let posX = 0;
-
         if (e.pageX) {
             posX = e.pageX;
         } else if (e.clientX) {
@@ -1978,14 +1976,10 @@ const toCanvasX = (c, e) => {
         }
         posX = posX - c.offsetLeft;
         return posX;
-    // }
-
 }
 
 const toCanvasY = (c, e) => {
-    // if (c && e){
         let posY = 0;
-
         if (e.pageY) {
             posY = e.pageY;
         } else if (e.clientY) {
@@ -1993,9 +1987,7 @@ const toCanvasY = (c, e) => {
                 + document.documentElement.scrollTop;
         }
         posY = posY - c.offsetTop;
-
         return posY;
-    // }
 }
 
 
