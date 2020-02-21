@@ -1,7 +1,5 @@
 export const toCanvasX = (c, e) => {
-    // if (c && e){
         let posX = 0;
-
         if (e.pageX) {
             posX = e.pageX;
         } else if (e.clientX) {
@@ -10,14 +8,10 @@ export const toCanvasX = (c, e) => {
         }
         posX = posX - c.offsetLeft;
         return posX;
-    // }
-
 }
 
 export const toCanvasY = (c, e) => {
-    // if (c && e){
         let posY = 0;
-
         if (e.pageY) {
             posY = e.pageY;
         } else if (e.clientY) {
@@ -25,8 +19,6 @@ export const toCanvasY = (c, e) => {
                 + document.documentElement.scrollTop;
         }
         posY = posY - c.offsetTop;
-
         return posY;
-    // }
 }
 

@@ -17,7 +17,7 @@ export default class Hexagon{
 
     drawPolygon () {
         const ctx = this.ctx;
-        ctx.clearRect(0, 0, 200, 200);
+        ctx.clearRect(0, 0, this.width, this.height);
         ctx.save();
         ctx.strokeStyle = "#137BBE";
         // create inner hex with diff r

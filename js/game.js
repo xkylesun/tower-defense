@@ -78,7 +78,7 @@ export default class Game {
     }
 
     genCost(){
-        let time = new Date().getTime()
+        let time = new Date().getTime();
         if (time - this.lastCostTime > this.costInterval){
             this.cost += 1;
             this.lastCostTime = time;
