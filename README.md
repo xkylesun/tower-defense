@@ -6,29 +6,9 @@
 * Render via HTML5 Canvas
 * Host on Github Pages
 
-## Gameplay
-* Drag guards to the battlefield to summon them
-* Guards have different stats and its unique skills set (ranged attack, heal, etc.)
-* Summoning guard will reduce available cost, which will regenerate automatically over time
-* Letting minion move past the blue crystal will cost a life; each game start with three lives
-
 ## Documentation
 ### OOP
-The design for this game follows the Object-oriented programming pattern. A superclass is created for both Guard and Minion class. Each type of guard is created from a subclass that extends the superclass. In such a way, class instances of the same type will share common attributes / functionalities written in the superclass and have their unique characteristics written on the subclass.
-
-### Pace control
-The game pace is controlled by limiting the interval during which a function will be triggered. Cost regeneration, enemy spawn, attack, and play frame are controlled
-by its individual interval defined in the constructor
-```javascript
-// game.js
-    let time = new Date().getTime();
-    if (time - this.lastCostTime > this.costInterval){
-    this.cost += 1;
-    this.lastCostTime = time;
-    }
-```
-
-### 
+The design for this game follows the Object-oriented programming pattern. A superclass is created for guards and minions. Each type of guards is created from a child class that extends the superclass. In such ways, class instances of the same type will share common attributes / functionalities defined in the superclass and have their unique characteristics written on the child class.
 
 ### Canvas
 * Game rendering: 
