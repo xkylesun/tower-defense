@@ -28,6 +28,9 @@ The design for this game follows the Object-oriented programming pattern. A supe
     }
 ```
 
+Demo: 
+![](https://lh3.googleusercontent.com/0Zrn1WibJzV9kPyPFqY0OSEgNT6fveS5XOpt-bIsewC779DqhR2B_nidjDfu-RS2sxS5_xMfcrBsy8rhJXY1FoSRiO8rBHPYDdFWNNgCE3nfJN-ICYrJ9y-OL4rz3xtYNOVPeR5MsQZHHzSiPiUdgfi8JfXTIajIH6i_AF4fiWa12G-n03qmmxI-MzpwniJrbI46JN7fVEw9HjB0_UhZLKWjufu1Ydt1-vaNJM2kt3O0om2xBcUdWem05WyBp2NXHwqfXPO637HA66rrSTP6t-KpLh8MyLYmd3jVW-pk4VmQOfVr1KwW-wtn5Fym7_JROg3Q2Snta3CEDwnVEtsObpPK25kbAhIxn5b8GbhNpnAtvljQeLhG4fQ-JLkx5qZVKDwkFPi_pd0xpYXxoPLm-23nHmZEAtM6N3rZ3Ft_fR29udpCQlBjRYFxWgykX-Fsv17nk9BdSVwkir4PxQAfUNvMLvvVh4qlUuzc7bhrikLksUCl6xwyf6v1j4EyCt-Ja_m5YC17xAwt30BISEQfgi0wcgEWL_1j2MC74McWgDj9a30ObkFDXmshP7HpwOBDpbFFTt8HKLoPUrGZIN2-aa3tUkrlSiKaDAecIHNPIL68u4oPPWI_Zw_PPuKZs2mzVxZQMFewQXHIIZlKsj_mtPhe0RNYoN5ssTL_DuW1PC_kZzFDKEWo5A=w646-h448-no "game-demo")
+
 * Data visualization
 
   comparison between different types of guards rendered via a radar chart using canvas
