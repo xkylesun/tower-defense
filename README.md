@@ -6,34 +6,31 @@
 * Render via HTML5 Canvas
 * Host on Github Pages
 
-## Gameplay
-* Drag guards to the battlefield to summon them
-* Guards have different stats and its unique skills set (ranged attack, heal, etc.)
-* Summoning guard will reduce available cost, which will regenerate automatically over time
-* Letting minion move past the blue crystal will cost a life; each game start with three lives
-
 ## Documentation
 ### OOP
-The design for this game follows the Object-oriented programming pattern. A superclass is created for both Guard and Minion class. Each type of guard is created from a subclass that extends the superclass. In such a way, class instances of the same type will share common attributes / functionalities written in the superclass and have their unique characteristics written on the subclass.
+The design for this game follows the Object-oriented programming pattern. A superclass is created for guards and minions. Each type of guards is created from a child class that extends the superclass. In such ways, class instances of the same type will share common attributes / functionalities defined in the superclass and have their unique characteristics written on the child class.
 
-### Pace control
-The game pace is controlled by limiting the interval during which a function will be triggered. Cost regeneration, enemy spawn, attack, and play frame are controlled
-by its individual interval defined in the constructor
-```javascript
-// game.js
-    let time = new Date().getTime();
-    if (time - this.lastCostTime > this.costInterval){
-    this.cost += 1;
-    this.lastCostTime = time;
-    }
+```Javascript
+// minion.js
+// SUPER CLASS FOR MINION
+export default class Minion {
+...
+}
+
+// dragon.js
+import Minion from "./minion";
+
+export default class Dragon extends Minion {
+...
+}
+
 ```
 
-### 
-
-### Canvas
+### HTML5 Canvas
 * Game rendering: 
 
-  draw function are constantly running in requestAnimationFrame loop to create animation effect
+  requestAnimationFrame loop is used to create animation effect within canvas at 60FPS. Within every run of animate(), serveral tasks (update positions, update health, update cost, etc) are performed to update the current game state, and the resulting frame is drawn to canvas via ctx.draw function.
+  
 ```javascript
     animate(){
         if (this.paused){
@@ -48,11 +45,35 @@ by its individual interval defined in the constructor
     }
 ```
 
-* Data visualization
 
-  comparison between different types of guards rendered via a radar chart using canvas
+* Data visualization:
+
+  Comparison between different types of guards rendered via a interactive radar chart using canvas
   
-![](https://lh3.googleusercontent.com/ZIxEPdQNLl_gqQEvbbbcVv-eWOf869152wOsgxpclXg4lELCu9zXON_cyR0FoBxc9NTRJK7NUFO1VsRYW8yWRUwuYE6bCMkrgQI2EZYISdg8iSnDwfwhtMlygWKVU6IbBL6SZo7Pue7VH2Cc6EAJd93F63_XlAnq4lEpGGn2lVG7eYzdYOaNPD5KQ3aDjzSwm9PCM3MLDTcklpJzTwqMZPPFZeaLU-vlfcISYi0khZcIbYB3gnsyNpbunmPoSaasl2wKYTP78tLpP5n20puyVGTjpi30kni6DN530zZd6uFmIE1XEP99Y0wdGmOJFHV-MGI0Dodlp85fzvU-zcp0l3b6inOWBtD06nq-GgyTWSBZHnBMWqGtyD-OGUMMsxiDjqYqkz1kYMKeHrxeeFE6WMN5bM0CpPPOQoqT26v3b0SPCfWuTvuBoxxajbTdbXpQ_9op2v3S-YuORHqSek4Vhdd0ZqFJvhn_pSEroeolxnM0AUwpoeZ3gh3yGK_-JCMJF4sl5wm1wB_9KF_kuwzVXAmeh7oI1ZAv2mJSSR8sNXXnK768zhkvuvz2l176Lag4t852VeBFFuXSlKhVqsFk73t3r2k1PbX_HtS-QoGdTnOTSlNQyiDUirYVCVJEZHr_H7uFf8eN7mXjvZpqBVmZDJl7q15JX0gwuNlgfFEwdYTE689WtBR7GYM=w514-h188-no "radar-chart")
+ ```Javascript
+     drawPolygon () {
+        const ctx = this.ctx;
+        ctx.clearRect(0, 0, this.width, this.height);
+        ctx.save();
+        ctx.strokeStyle = "#137BBE";
+        let r = this.radius / this.side;
+        for (let i = 0; i < this.side; i++) {
+            ctx.beginPath();
+            let currR = r * (i + 1);
+            for (let j = 0; j < this.side; j++) {
+                let x = Math.cos(this.angle * j) * currR + this.center;
+                let y = Math.sin(this.angle * j) * currR + this.center;
+                ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.stroke()
+        }
+        ctx.restore();
+    }
+ ```
+  Demo:
+
+![](https://lh3.googleusercontent.com/tVuyAvVvDzfGf_F5PeF9Ferthlkcwrf9KFiSfOYQzHYEo7ccfuKShBxY3hIc0jqdjRzrwAmnNh7iwZUkt2pbWw44emtHvXYmNosKU43lMMGucpOikM0C8H0S92EoyguRkeSO06RYDp-ur14UGSf45CNGegp7bG9RxC3-RwINTKyprOpfNo6wz7iguCTlPaVH40_cEKvSOrySp4aA2047o3klU4IuI7xNljTU1mTaCXHKJ3qeEE-sitPBM6yuwt3shZjMwlw6xYVmM-gnF9LbUnE0sC9HUBmuQxBATkG1t5X1MuN3tiVgz-L3mErMBhcsOk3QPqra0He8K106tM0dLLHyDiyy71IvbGDDKpHvOtccurJdYr33IuS5-Px5SgEvwqZp3o10cIpC3wg0R8QDzgDCIboDAkGCQxfNhUgnWncwJF25K6H4RjpzWkTzPSHAo97tIHyPRzSvSuJAVUeHEMGJihRUdScuSk7jNHee4oKxdobDTI-B-MDSnaoMAoHsqZrCAMvMkD0_3EosKEHhpr3oisdVgMROdquzVcwZYkJCqwJpoHeutJUbvcNPtrMYV0MsgPUye_CW9f7zpfMvcoSXnM_CLof1MufBqg9hBo17EiTW2c6Mwhj1aM8nk1VNEsKinah9FZgNLr9KcHjUQNlyu7_mZyNSQVmIQIkqwruUeOYe5YlS3Rjoyw5YvwISr_d7axDUvfJoAQ1G0W3Wz4yh3ZWrYd9BcQoWlsUMMZzXV4E=w514-h188-no "radar-chart")
 
 
 ## Acknowledgements
