@@ -45,8 +45,3 @@ export default class ShopItem {
     }
 }
 
-
-// const SHOP = [Vanguard, Mage, Berzerk, Priest];
-// SHOP = SHOP.map(k => new ShopItem(k));
-
-// export { SHOP };
